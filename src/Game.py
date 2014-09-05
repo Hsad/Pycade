@@ -7,7 +7,8 @@ class Game(object):
 		self.clock = pygame.time.Clock();
 		self.screen = pygame.display.set_mode((1024,768))
 		self.timer = pygame.time.get_ticks()
-		self.elapsed = 0
+		self.dt = 0
+		#self.elapsed = 0
 
 
 	def process_events(self):
@@ -17,9 +18,10 @@ class Game(object):
 					self.over = True
 
 	def update(self):
-		self.elapsed = pygame.time.get_ticks() - self.timer
-		self.timer = pygame.time.get_ticks()
-		print self.elapsed
+		#self.elapsed = pygame.time.get_ticks() - self.timer
+		#self.timer = pygame.time.get_ticks()
+		#print self.elapsed
+		print self.dt
 
 	def draw(self):
 		pass
