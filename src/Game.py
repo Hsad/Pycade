@@ -1,4 +1,4 @@
-import pygame
+import pygame,sys
 
 class Game(object):
 	def __init__(self):
@@ -13,6 +13,10 @@ class Game(object):
 
 	def process_events(self):
 		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+					self.over = True
+					
+					sys.exit()
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_ESCAPE:
 					self.over = True
