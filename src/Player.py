@@ -13,11 +13,11 @@ class Player(object):
 		self.yvel = 0
 
 		#acceleration and deceleration
-		self.xaccel = 4000
-		self.yaccel = 4000
-		self.xdecel = 10000
+		self.xaccel = 8000
+		self.yaccel = 5000
+		self.xdecel = 8000
 
-		self.xmax = 4000
+		self.xmax = 10000
 
 	def update(self, dt, screen_rect):
 		future_rect = self.rect.move(0,0)
@@ -43,14 +43,14 @@ class Player(object):
 
 		future_rect.x += self.xvel*dt
 
-		print self.xvel
-
 
 		#boundary checking
 		if future_rect.right > screen_rect.right:
 			future_rect.right = screen_rect.right
+			self.xvel = 0
 		if future_rect.left < 0:
 			future_rect.left = 0
+			self.xvel = 0
 		if future_rect.top < 0:
 			future_rect.top = 0
 		if future_rect.bottom > screen_rect.bottom:

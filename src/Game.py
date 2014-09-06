@@ -36,9 +36,9 @@ class Game(object):
 
 
 				#if both directions are pressed
-				if self.player.movement[2] and self.player.movement[3]:
+				"""if self.player.movement[2] and self.player.movement[3]:
 					self.player.movement[2] = False
-					self.player.movement[3] = False
+					self.player.movement[3] = False"""
 
 			if event.type == pygame.KEYUP:
 				if event.key == pygame.K_w:
