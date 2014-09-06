@@ -34,6 +34,12 @@ class Game(object):
 				if event.key == pygame.K_d:
 					self.player.movement[3] = True
 
+
+				#if both directions are pressed
+				if self.player.movement[2] and self.player.movement[3]:
+					self.player.movement[2] = False
+					self.player.movement[3] = False
+
 			if event.type == pygame.KEYUP:
 				if event.key == pygame.K_w:
 					self.player.movement[0] = False
@@ -43,6 +49,8 @@ class Game(object):
 					self.player.movement[2] = False
 				if event.key == pygame.K_d:
 					self.player.movement[3] = False
+
+		print self.player.movement
 
 
 	def update(self):
