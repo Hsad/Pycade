@@ -12,9 +12,12 @@ class Player(object):
 		self.xvel = 0
 		self.yvel = 0
 
+		self.start_jump = False
+		self.jumping = False
+
 		#acceleration and deceleration
 		self.xaccel = 8000
-		self.yaccel = 5000
+		self.gravity = 5000
 		self.xdecel = 8000
 
 		self.xmax = 10000
@@ -41,7 +44,19 @@ class Player(object):
 		if self.movement[2] == self.movement[3]:
 			self.deceleration("x", dt)
 
+
+		if self.start_jump:
+			self.jumping = True
+			self.yvel = -1500
+			self.start_jump = False
+
+		if self.jumping:
+			self.yvel += self.gravity*dt
+		else:
+			self.yvel = 0
+
 		future_rect.x += self.xvel*dt
+		future_rect.y += self.yvel*dt
 
 
 		#boundary checking
@@ -55,8 +70,11 @@ class Player(object):
 			future_rect.top = 0
 		if future_rect.bottom > screen_rect.bottom:
 			future_rect.bottom = screen_rect.bottom
-
+			self.jumping = False
 		self.rect = future_rect
+
+
+		print self.yvel
 
 	def deceleration(self, dimension, dt):
 		if dimension == "x":
