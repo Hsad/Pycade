@@ -34,7 +34,7 @@ class Game(object):
 				if event.key == pygame.K_d:
 					self.player.movement[3] = True
 				if event.key == pygame.K_SPACE:
-					if not self.player.jumping:
+					if not self.player.jumping and not self.player.duck:
 						self.player.start_jump = True
 
 
