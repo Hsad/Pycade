@@ -10,19 +10,26 @@ class Player(object):
 		self.rect = self.image.get_rect()
 		self.rect.x = self.xpos
 		self.rect.y = self.ypos - self.rect.height
+
+		#up, down, left, right
 		self.movement = [False for i in range(4)]
 		self.xvel = 0
 		self.yvel = 0
+
+		#have they commenced the jump?
 		self.start_jump = False
+
+		#they are in the air
 		self.jumping = False
 
-		self.duck = False
+		self.ducking = False
 
 		#acceleration and deceleration
 		self.xaccel = 8000
 		self.gravity = 5000
 		self.xdecel = 8000
 
+		#max horizontal speed
 		self.xmax = 10000
 
 	def update(self, dt, screen_rect):
@@ -34,30 +41,26 @@ class Player(object):
 			future_rect.y += self.yvel*dt"""
 
 		if self.movement[1]:
-			self.duck = True
+			self.ducking = True
 			self.duck_rect.left = self.rect.left
 			self.duck_rect.bottom = self.rect.bottom
-			self.xvel = self.xaccel = 0
+			self.xvel = 0
 			
 
 		else:
-			self.duck=False
+			self.ducking=False
 			self.duck_rect.left = self.rect.left
 			self.duck_rect.bottom = self.rect.bottom
-			self.xaccel = 8000
-			self.yaccel = 5000
-
-
 
 		#accelerate
-		if self.movement[2]:
+		if self.movement[2] and not self.ducking:
 			self.xvel -= self.xaccel*dt
 			if self.xvel < -self.xmax:
 				self.xvel = -self.xmax
-		if self.movement[3]:
+		if self.movement[3] and not self.ducking:
 			self.xvel += self.xaccel*dt
 			if self.xvel > self.xmax:
-				self.xvel = self.xmax 
+				self.xvel = self.xmax
 
 		if self.movement[2] == self.movement[3]:
 			self.deceleration("x", dt)
@@ -92,7 +95,7 @@ class Player(object):
 		self.rect = future_rect
 
 
-		print self.yvel
+		print self.xvel
 
 	def deceleration(self, dimension, dt):
 		if dimension == "x":
@@ -108,7 +111,7 @@ class Player(object):
 
 
 	def draw(self,screen):
-		if self.duck:
+		if self.ducking:
 			screen.blit(self.duck_image,self.duck_rect)
 		else:
 			screen.blit(self.image,self.rect)
