@@ -11,9 +11,10 @@ class Player(object):
 		self.movement = [False for i in range(4)]
 		self.xvel = 0
 		self.yvel = 0
-
 		self.start_jump = False
 		self.jumping = False
+
+		self.duck = False
 
 		#acceleration and deceleration
 		self.xaccel = 8000
