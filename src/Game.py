@@ -21,14 +21,32 @@ class Game(object):
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 					self.over = True
-					
 					sys.exit()
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_ESCAPE:
 					self.over = True
+				if event.key == pygame.K_w:
+					self.player.movement[0] = True
+				if event.key == pygame.K_s:
+					self.player.movement[1] = True
+				if event.key == pygame.K_a:
+					self.player.movement[2] = True
+				if event.key == pygame.K_d:
+					self.player.movement[3] = True
+
+			if event.type == pygame.KEYUP:
+				if event.key == pygame.K_w:
+					self.player.movement[0] = False
+				if event.key == pygame.K_s:
+					self.player.movement[1] = False
+				if event.key == pygame.K_a:
+					self.player.movement[2] = False
+				if event.key == pygame.K_d:
+					self.player.movement[3] = False
+
 
 	def update(self):
-		pass
+		self.player.update(self.dt, self.screen_rect)
 
 	def draw(self):
 		#self.screen.fill((0,0,0))
