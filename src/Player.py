@@ -4,8 +4,8 @@ class Player(object):
 	def __init__(self, screen):
 		self.xpos = 0
 		self.ypos = screen.get_rect().height
-	self.image = pygame.image.load("../assets/Art/PlayerPlaceholder.png").convert_alpha()
-		self.duck_image = pygame.image.load("../assets/Art/PlayerDuckingPLaceholder.png").convert_alpha()
+		self.image = pygame.image.load("../assets/Art/PlayerPlaceholder.png").convert_alpha()
+		self.duck_image = pygame.image.load("../assets/Art/PlayerDuckingPlaceholder.png").convert_alpha()
 		self.duck_rect = self.duck_image.get_rect()
 		self.rect = self.image.get_rect()
 		self.rect.x = self.xpos
@@ -32,6 +32,21 @@ class Player(object):
 			future_rect.y -= self.yvel*dt
 		if self.movement[1]:
 			future_rect.y += self.yvel*dt"""
+
+		if self.movement[1]:
+			self.duck = True
+			self.duck_rect.left = self.rect.left
+			self.duck_rect.bottom = self.rect.bottom
+			self.xvel = self.xaccel = 0
+			
+
+		else:
+			self.duck=False
+			self.duck_rect.left = self.rect.left
+			self.duck_rect.bottom = self.rect.bottom
+			self.xaccel = 8000
+			self.yaccel = 5000
+
 
 
 		#accelerate
@@ -93,5 +108,8 @@ class Player(object):
 
 
 	def draw(self,screen):
-		screen.blit(self.image,self.rect)
+		if self.duck:
+			screen.blit(self.duck_image,self.duck_rect)
+		else:
+			screen.blit(self.image,self.rect)
 		
