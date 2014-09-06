@@ -11,7 +11,7 @@ class Game(object):
 		self.timer = pygame.time.get_ticks()
 		self.dt = 0
 		pygame.display.set_caption("A Team Won Game ")
-		self.backgroundImage = pygame.image.load("../assets/BackgroundPlaceholder.jpg").convert_alpha()
+		self.backgroundImage = pygame.image.load("../assets/Art/BackgroundPlaceholder.jpg").convert_alpha()
 		self.backgroundRect = self.backgroundImage.get_rect()
 
 		#self.elapsed = 0
