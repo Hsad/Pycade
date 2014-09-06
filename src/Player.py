@@ -4,8 +4,8 @@ class Player(object):
 	def __init__(self, screen):
 		self.xpos = 0
 		self.ypos = screen.get_rect().height
-		self.image = pygame.image.load("../assets/PlayerPlaceholder.png").convert_alpha()
-		self.duck_image = pygame.image.load("../assets/PlayerDuckingPLaceholder.png").convert_alpha()
+		self.image = pygame.image.load("../assets/Art/PlayerPlaceholder.png").convert_alpha()
+		self.duck_image = pygame.image.load("../assets/Art/PlayerDuckingPLaceholder.png").convert_alpha()
 		self.duck_rect = self.duck_image.get_rect()
 		self.rect = self.image.get_rect()
 
