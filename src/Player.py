@@ -25,12 +25,12 @@ class Player(object):
 		self.ducking = False
 
 		#acceleration and deceleration
-		self.xaccel = 8000
-		self.gravity = 5000
-		self.xdecel = 8000
+		self.xaccel = 4000
+		self.gravity = 7000
+		self.xdecel = 6000
 
 		#max horizontal speed
-		self.xmax = 10000
+		self.xmax = 7000
 
 	def update(self, dt, screen_rect):
 		future_rect = self.rect.move(0,0)
