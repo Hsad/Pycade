@@ -2,9 +2,12 @@ import pygame
 
 class Player(object):
 	def __init__(self, screen):
+		#left == 0, right == 1;
+		self.direction = 0;
 		self.xpos = 0
 		self.ypos = screen.get_rect().height
 		self.image = pygame.image.load("../assets/Art/PlayerPlaceholder.png").convert_alpha()
+		#self.image = pygame.image.load("../assets/Art/princess_run.png").convert_alpha()
 		self.duck_image = pygame.image.load("../assets/Art/PlayerDuckingPlaceholder.png").convert_alpha()
 		self.duck_rect = self.duck_image.get_rect()
 		self.rect = self.image.get_rect()
@@ -32,7 +35,14 @@ class Player(object):
 		#max horizontal speed
 		self.xmax = 10000
 
+		#values for sprite changes
+		"""self.framerate = 4
+		self.framebuffer = 0
+		self.timer = pygame.time.get_ticks()
+		self.elapsed = 0"""
+
 	def update(self, dt, screen_rect):
+		"""self.elapsed = pygame.time.get_ticks() - self.timer"""
 		future_rect = self.rect.move(0,0)
 
 		"""if self.movement[0]:
@@ -55,10 +65,12 @@ class Player(object):
 		#accelerate
 		if self.movement[2] and not self.ducking:
 			self.xvel -= self.xaccel*dt
+			"""self.direction = 1;"""
 			if self.xvel < -self.xmax:
 				self.xvel = -self.xmax
 		if self.movement[3] and not self.ducking:
 			self.xvel += self.xaccel*dt
+			"""self.direction = 0;"""
 			if self.xvel > self.xmax:
 				self.xvel = self.xmax
 
@@ -95,6 +107,18 @@ class Player(object):
 		self.rect = future_rect
 
 
+		#sprite changing
+		"""if self.movement == [False, False, False, False]:
+			self.frame = 0
+		else:
+			self.framebuffer += self.elapsed
+			if self.framebuffer > 1000.0/self.framerate:
+				self.framebuffer = 0
+				self.frame += 1
+			if self.frame > 3:
+				self.frame = 0"""
+
+
 		print self.xvel
 
 	def deceleration(self, dimension, dt):
@@ -114,5 +138,6 @@ class Player(object):
 		if self.ducking:
 			screen.blit(self.duck_image,self.duck_rect)
 		else:
-			screen.blit(self.image,self.rect)
+			""",pygame.Rect(64*(self.frame), self.direction*80, 64, 80))"""
+			screen.blit(self.image, self.rect) 
 		
