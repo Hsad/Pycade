@@ -3,12 +3,16 @@ import pygame
 class Player(object):
 	def __init__(self, screen):
 		#left == 0, right == 1;
-		self.direction = 0;
+		self.direction = 0
 		self.xpos = 0
 		self.ypos = screen.get_rect().height
+
+		#images
 		self.image = pygame.image.load("../assets/Art/PlayerPlaceholder.png").convert_alpha()
-		#self.image = pygame.image.load("../assets/Art/princess_run.png").convert_alpha()
+		self.running = pygame.image.load("../assets/Art/princess_run.png").convert_alpha()
 		self.duck_image = pygame.image.load("../assets/Art/PlayerDuckingPlaceholder.png").convert_alpha()
+		
+		#rects
 		self.duck_rect = self.duck_image.get_rect()
 		self.rect = self.image.get_rect()
 		self.rect.x = self.xpos
@@ -28,21 +32,19 @@ class Player(object):
 		self.ducking = False
 
 		#acceleration and deceleration
-		self.xaccel = 4000
+		self.xaccel = 700
 		self.gravity = 7000
-		self.xdecel = 6000
+		self.xdecel = 2000
 
 		#max horizontal speed
-		self.xmax = 7000
+		self.xmax = 700
 
 		#values for sprite changes
-		"""self.framerate = 4
+		self.frame = 0
+		self.framerate = 4
 		self.framebuffer = 0
-		self.timer = pygame.time.get_ticks()
-		self.elapsed = 0"""
 
 	def update(self, dt, screen_rect):
-		"""self.elapsed = pygame.time.get_ticks() - self.timer"""
 		future_rect = self.rect.move(0,0)
 
 		"""if self.movement[0]:
@@ -63,14 +65,24 @@ class Player(object):
 			self.duck_rect.bottom = self.rect.bottom
 
 		#accelerate
+
+		#left
 		if self.movement[2] and not self.ducking:
-			self.xvel -= self.xaccel*dt
-			"""self.direction = 1;"""
+			if self.xvel > 0:
+				self.xvel -= self.xdecel*dt
+			else:
+				self.xvel -= self.xaccel*dt
+			self.direction = 1
 			if self.xvel < -self.xmax:
 				self.xvel = -self.xmax
+
+		#right
 		if self.movement[3] and not self.ducking:
-			self.xvel += self.xaccel*dt
-			"""self.direction = 0;"""
+			if self.xvel < 0:
+				self.xvel += self.xdecel*dt
+			else:
+				self.xvel += self.xaccel*dt
+			self.direction = 0
 			if self.xvel > self.xmax:
 				self.xvel = self.xmax
 
@@ -104,22 +116,21 @@ class Player(object):
 		if future_rect.bottom > screen_rect.bottom:
 			future_rect.bottom = screen_rect.bottom
 			self.jumping = False
+
 		self.rect = future_rect
 
 
 		#sprite changing
-		"""if self.movement == [False, False, False, False]:
+		if self.movement == [False, False, False, False]:
 			self.frame = 0
 		else:
-			self.framebuffer += self.elapsed
-			if self.framebuffer > 1000.0/self.framerate:
+			self.framebuffer += dt
+			if self.framebuffer > .5/self.framerate:
 				self.framebuffer = 0
 				self.frame += 1
 			if self.frame > 3:
-				self.frame = 0"""
+				self.frame = 0
 
-
-		print self.xvel
 
 	def deceleration(self, dimension, dt):
 		if dimension == "x":
@@ -138,6 +149,5 @@ class Player(object):
 		if self.ducking:
 			screen.blit(self.duck_image,self.duck_rect)
 		else:
-			""",pygame.Rect(64*(self.frame), self.direction*80, 64, 80))"""
-			screen.blit(self.image, self.rect) 
+			screen.blit(self.running, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80)) 
 		
