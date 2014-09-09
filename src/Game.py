@@ -1,4 +1,4 @@
-import pygame, sys, Player, Camera
+import pygame, sys, Player
 
 class Game(object):
 	def __init__(self):
@@ -14,7 +14,9 @@ class Game(object):
 		self.backgroundImage = pygame.image.load("../assets/Art/BackgroundPlaceholder.jpg").convert_alpha()
 		self.backgroundRect = self.backgroundImage.get_rect()
 
-		self.camera = Camera.Camera(self.screen_rect.width, self.screen_rect.height)
+		"""apply the offset for 
+				  x y"""
+		offset = [0,0]
 
 		#self.elapsed = 0
 
