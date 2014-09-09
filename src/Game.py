@@ -1,4 +1,4 @@
-import pygame, sys, Player, Camera
+import pygame, sys, Player, Camera, Platform
 
 class Game(object):
 	def __init__(self):
@@ -8,6 +8,7 @@ class Game(object):
 		self.screen_rect = self.screen.get_rect()
 		self.player = Player.Player(self.screen)
 		self.clock = pygame.time.Clock();
+		self.testPlatform = Platform.Platform("../assets/art/platformPlaceholder.png",500,500)
 		self.timer = pygame.time.get_ticks()
 		self.dt = 0
 		pygame.display.set_caption("A Team Won Game ")
@@ -55,15 +56,28 @@ class Game(object):
 				if event.key == pygame.K_d:
 					self.player.movement[3] = False
 
+	def checkCollisions(self, entity):
+		if entity.rect.colliderect(self.testPlatform.rect):
+			if entity.rect.bottom > self.testPlatform.rect.top and self.player.jumping:
+				print "Hit Something!"
+
+				if  entity.rect.left < self.testPlatform.rect.right and entity.rect.right > self.testPlatform.rect.left:
+					self.player.jumping = False
+					entity.rect.bottom = self.testPlatform.rect.top
+			if  entity.rect.left > self.testPlatform.rect.right or entity.rect.right < self.testPlatform.rect.left:
+				self.player.jumping=True
+
+
 
 
 	def update(self):
 		self.player.update(self.dt, self.screen_rect)
+		self.checkCollisions(self.player)
 
 	def draw(self):
 		#self.screen.fill((0,0,0))
 		self.screen.blit(self.backgroundImage,self.screen_rect)
 		#pygame.draw.line(self.screen,(0,0,0),(0,0),(300,300))
-
+		self.testPlatform.draw(self.screen)
 		self.player.draw(self.screen)
 
