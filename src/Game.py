@@ -1,4 +1,4 @@
-import pygame, sys, Player
+import pygame, sys, Player, Camera
 
 class Game(object):
 	def __init__(self):
@@ -13,6 +13,8 @@ class Game(object):
 		pygame.display.set_caption("A Team Won Game ")
 		self.backgroundImage = pygame.image.load("../assets/Art/BackgroundPlaceholder.jpg").convert_alpha()
 		self.backgroundRect = self.backgroundImage.get_rect()
+
+		self.camera = Camera.Camera(self.screen_rect.width, self.screen_rect.height)
 
 		#self.elapsed = 0
 

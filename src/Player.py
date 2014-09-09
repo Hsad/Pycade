@@ -8,13 +8,13 @@ class Player(object):
 		self.ypos = screen.get_rect().height
 
 		#images
-		self.image = pygame.image.load("../assets/Art/PlayerPlaceholder.png").convert_alpha()
-		self.running = pygame.image.load("../assets/Art/princess_run.png").convert_alpha()
+		#self.image = pygame.image.load("../assets/Art/PlayerPlaceholder.png").convert_alpha()
+		self.image = pygame.image.load("../assets/Art/princess_run.png").convert_alpha()
 		self.duck_image = pygame.image.load("../assets/Art/PlayerDuckingPlaceholder.png").convert_alpha()
 		
 		#rects
 		self.duck_rect = self.duck_image.get_rect()
-		self.rect = self.image.get_rect()
+		self.rect = pygame.Rect(0,0,64,80)
 		self.rect.x = self.xpos
 		self.rect.y = self.ypos - self.rect.height
 
@@ -32,7 +32,7 @@ class Player(object):
 		self.ducking = False
 
 		#acceleration and deceleration
-		self.xaccel = 700
+		self.xaccel = 1000
 		self.gravity = 7000
 		self.xdecel = 2000
 
@@ -149,5 +149,5 @@ class Player(object):
 		if self.ducking:
 			screen.blit(self.duck_image,self.duck_rect)
 		else:
-			screen.blit(self.running, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80)) 
+			screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80)) 
 		
