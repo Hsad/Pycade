@@ -1,4 +1,4 @@
-import pygame, sys, Player, Camera, Platform
+import pygame, sys, Player,  Platform
 
 class Game(object):
 	def __init__(self):
@@ -15,7 +15,6 @@ class Game(object):
 		self.backgroundImage = pygame.image.load("../assets/Art/BackgroundPlaceholder.jpg").convert_alpha()
 		self.backgroundRect = self.backgroundImage.get_rect()
 
-		self.camera = Camera.Camera(self.screen_rect.width, self.screen_rect.height)
 
 		#self.elapsed = 0
 
@@ -57,16 +56,18 @@ class Game(object):
 					self.player.movement[3] = False
 
 	def checkCollisions(self, entity):
-		if entity.rect.colliderect(self.testPlatform.rect):
-			if entity.rect.bottom > self.testPlatform.rect.top and self.player.jumping:
+		if entity.rect.colliderect(self.testPlatform.rect) and self.player.jumping :
+			if entity.rect.bottom > self.testPlatform.rect.top and self.player.yvel>0:
 				print "Hit Something!"
 
 				if  entity.rect.left < self.testPlatform.rect.right and entity.rect.right > self.testPlatform.rect.left:
 					self.player.jumping = False
 					entity.rect.bottom = self.testPlatform.rect.top
-			if  entity.rect.left > self.testPlatform.rect.right or entity.rect.right < self.testPlatform.rect.left:
-				self.player.jumping=True
-
+					self.testPlatform.onPlatform = True
+						
+		if (entity.rect.left > self.testPlatform.rect.right or entity.rect.right < self.testPlatform.rect.left) and self.testPlatform.onPlatform :
+		 	self.player.jumping=True
+		 	self.testPlatform.onPlatform = False
 
 
 

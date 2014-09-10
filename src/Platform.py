@@ -5,7 +5,7 @@ class Platform(object):
 	def __init__(self,filePath,xpos,ypos, ):
 		self.image = pygame.image.load(filePath)	
 		self.rect= self.image.get_rect()
-		
+		self.onPlatform = False
 		self.rect.x = xpos
 		self.rect.y = ypos
 
