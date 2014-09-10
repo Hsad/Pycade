@@ -9,7 +9,7 @@ class Player(object):
 
 		#images
 		#self.image = pygame.image.load("../assets/Art/PlayerPlaceholder.png").convert_alpha()
-		self.image = pygame.image.load("../assets/Art/princess_run.png").convert_alpha()
+		self.image = pygame.image.load("../assets/Art/princess_master.png").convert_alpha()
 		self.duck_image = pygame.image.load("../assets/Art/PlayerDuckingPlaceholder.png").convert_alpha()
 		
 		#rects
@@ -43,6 +43,7 @@ class Player(object):
 		self.frame = 0
 		self.framerate = 4
 		self.framebuffer = 0
+		self.framelength = 5
 
 	def update(self, dt, screen_rect):
 		future_rect = self.rect.move(0,0)
@@ -70,9 +71,12 @@ class Player(object):
 		if self.movement[2] and not self.ducking:
 			if self.xvel > 0:
 				self.xvel -= self.xdecel*dt
+				self.direction = 4
+				self.framelength = 2
 			else:
 				self.xvel -= self.xaccel*dt
-			self.direction = 1
+				self.framelength = 4
+				self.direction = 1
 			if self.xvel < -self.xmax:
 				self.xvel = -self.xmax
 
@@ -80,14 +84,19 @@ class Player(object):
 		if self.movement[3] and not self.ducking:
 			if self.xvel < 0:
 				self.xvel += self.xdecel*dt
+				self.direction = 5
+				self.framelength = 2
 			else:
 				self.xvel += self.xaccel*dt
-			self.direction = 0
+				self.framelength = 4
+				self.direction = 0
 			if self.xvel > self.xmax:
 				self.xvel = self.xmax
 
 		if self.movement[2] == self.movement[3]:
 			self.deceleration("x", dt)
+			self.direction = 2
+			self.framelength = 4
 
 
 		if self.start_jump:
@@ -121,16 +130,13 @@ class Player(object):
 
 
 		#sprite changing
-		if self.movement == [False, False, False, False]:
+		
+		self.framebuffer += dt
+		if self.framebuffer > .5/self.framerate:
+			self.framebuffer = 0
+			self.frame += 1
+		if self.frame > self.framelength-1:
 			self.frame = 0
-		else:
-			self.framebuffer += dt
-			if self.framebuffer > .5/self.framerate:
-				self.framebuffer = 0
-				self.frame += 1
-			if self.frame > 3:
-				self.frame = 0
-
 
 	def deceleration(self, dimension, dt):
 		if dimension == "x":
