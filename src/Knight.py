@@ -38,8 +38,6 @@ class Knight(object):
     self.framebuffer = 0
 
   def update(self, dt, screen_rect, player):
-    print player.rect.x
-    print self.rect.x
     if player.rect.x > self.rect.x:
       self.movement[2]=False
       self.movement[3]=True

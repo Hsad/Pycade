@@ -9,10 +9,10 @@ class Player(object):
 			0 = running
 			1 = idle
 			2 = skidding
+			3 = jumping
+			4 = ducking
 		"""
 		self.state = 0
-		self.xpos = 0
-		self.ypos = screen.get_rect().height
 
 		#images
 		#self.image = pygame.image.load("../assets/Art/PlayerPlaceholder.png").convert_alpha()
@@ -22,9 +22,9 @@ class Player(object):
 		#rects
 		self.duck_rect = self.duck_image.get_rect()
 		self.rect = pygame.Rect(0,0,64,80)
-		self.rect.x = self.xpos
-		self.rect.y = self.ypos - self.rect.height
 
+		self.rect.x = 0
+		self.rect.y = screen.get_rect().height
 		#up, down, left, right
 		self.movement = [False for i in range(4)]
 		self.xvel = 0
@@ -52,7 +52,7 @@ class Player(object):
 		self.frame = 0
 		self.framerate = 4
 		self.framebuffer = 0
-		self.framelength = 5
+		self.framelength = 4
 
 	def update(self, dt, screen_rect):
 		future_rect = self.rect.move(0,0)	
@@ -67,7 +67,8 @@ class Player(object):
 			self.duck_rect.left = self.rect.left
 			self.duck_rect.bottom = self.rect.bottom
 			self.xvel = 0
-			
+			self.state = 4
+			self.framelength = 1
 
 		else:
 			self.ducking=False
@@ -104,7 +105,7 @@ class Player(object):
 			if self.xvel > self.xmax:
 				self.xvel = self.xmax
 
-		if self.movement[2] == self.movement[3]:
+		if self.movement[2] == self.movement[3] and not self.ducking:
 			self.deceleration("x", dt)
 			self.state = 1
 			self.framelength = 4
@@ -117,6 +118,8 @@ class Player(object):
 
 		if self.jumping:
 			self.yvel += self.gravity*dt
+			self.state = 3
+			self.framelength = 1
 		else:
 			self.yvel = 0
 
@@ -142,16 +145,15 @@ class Player(object):
 		self.rect = future_rect
 
 
+
 		#sprite changing
-		
 		self.framebuffer += dt
 		if self.framebuffer > .5/self.framerate:
 			self.framebuffer = 0
 			self.frame += 1
-		if self.frame > self.framelength-1:
+		if self.frame >= self.framelength:
 			self.frame = 0
 
-		#print str(self.state) + str(self.direction)
 
 	def deceleration(self, dimension, dt):
 		if dimension == "x":
@@ -167,7 +169,10 @@ class Player(object):
 
 
 	def draw(self,screen):
-		if self.ducking:
-			screen.blit(self.duck_image,self.duck_rect)
+		if self.jumping:
+			if self.yvel < 0:
+				screen.blit(self.image, self.rect, pygame.Rect(0, (2*self.state + self.direction) * 80 , 64, 80)) 
+			if self.yvel > 0:
+				screen.blit(self.image, self.rect, pygame.Rect(64, (2*self.state + self.direction) * 80 , 64, 80)) 
 		else:
 			screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), (2*self.state + self.direction) * 80 , 64, 80)) 

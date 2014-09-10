@@ -8,7 +8,7 @@ class Game(object):
 		self.screen_rect = self.screen.get_rect()
 		self.player = Player.Player(self.screen)
 		self.testKnight = Knight.Knight(self.screen, 0, 0)
-		self.clock = pygame.time.Clock();
+		self.clock = pygame.time.Clock()
 		self.testPlatform = Platform.Platform("../assets/art/platformPlaceholder.png",300,300)
 		self.testLadder = Ladder.Ladder("../assets/art/Ladder Placeholder.png",300,300)
 		self.testLadder2 = Ladder.Ladder("../assets/art/Ladder Placeholder.png",400,200)
@@ -71,7 +71,6 @@ class Game(object):
 			if entity.rect.colliderect(ladder.rect):
 				if entity.rect.centerx > ladder.rect.left and entity.rect.centerx < ladder.rect.right:
 					ladder.onLadder = True
-					print ladder.onLadder
 					if entity.movement[0]and ladder.onLadder:
 						entity.rect.centerx = ladder.rect.centerx
 						entity.jumping = False
