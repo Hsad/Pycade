@@ -9,11 +9,7 @@ class Game(object):
 		self.player = Player.Player(self.screen)
 		self.testKnight = Knight.Knight(self.screen, 0, 0)
 		self.clock = pygame.time.Clock();
-		self.testPlatform = Platform.Platform("../assets/art/platformPlaceholder.png",300,300)
-		self.testLadder = Ladder.Ladder("../assets/art/Ladder Placeholder.png",300,300)
-		self.testLadder2 = Ladder.Ladder("../assets/art/Ladder Placeholder.png",400,200)
-
-		self.ladderList = [self.testLadder,self.testLadder2]
+		self.ladderList = []
 		self.timer = pygame.time.get_ticks()
 		self.dt = 0
 		pygame.display.set_caption("A Team Won Game ")
@@ -45,8 +41,11 @@ class Game(object):
 			self.platform_list_file_line = self.line.split()
 			for self.symbol in self.platform_list_file_line:
 				if self.symbol == "P":
-					self.platform_rect = Platform.Platform("../assets/art/platformPlaceholder.png",self.platformx,self.platformy)
-					self.platform_list.append(self.platform_rect)
+					self.temp_platform = Platform.Platform("../assets/art/platformPlaceholder.png",self.platformx,self.platformy)
+					self.platform_list.append(self.temp_platform)
+				if self.symbol == "L":
+					self.temp_ladder = Ladder.Ladder("../assets/art/Ladder Placeholder.png", self.platformx, self.platformy)
+					self.ladderList.append(self.temp_ladder)
 				self.platformx += 40
 			self.platformy += 40
 
@@ -109,18 +108,6 @@ class Game(object):
 		 		self.player.jumping=True
 		 		ladder.onLadder = False			
 
-
-
-
-
-		if entity.rect.colliderect(self.testPlatform.rect) and self.player.jumping :
-			if entity.rect.bottom > self.testPlatform.rect.top and self.player.yvel>0:
-				
-
-				if  entity.rect.left < self.testPlatform.rect.right and entity.rect.right > self.testPlatform.rect.left:
-					self.player.jumping = False
-					entity.rect.bottom = self.testPlatform.rect.top
-					self.testPlatform.onPlatform = True
 		for platform in self.platform_list:
 			if entity.rect.colliderect(platform) and self.player.jumping:
 				if entity.rect.bottom > platform.rect.top and self.player.yvel>0:
@@ -148,7 +135,6 @@ class Game(object):
 		#pygame.draw.line(self.screen,(0,0,0),(0,0),(300,300))
 		for ladder in self.ladderList:
 			ladder.draw(self.screen)
-		self.testPlatform.draw(self.screen)
 		for platform in self.platform_list:
 			platform.draw(self.screen)
 		self.player.draw(self.screen)
