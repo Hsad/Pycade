@@ -32,12 +32,12 @@ class Player(object):
 		self.ducking = False
 
 		#acceleration and deceleration
-		self.xaccel = 1000
-		self.gravity = 7000
-		self.xdecel = 2000
+		self.xaccel = 600
+		self.gravity = 2000
+		self.xdecel = 1000
 
 		#max horizontal speed
-		self.xmax = 700
+		self.xmax = 800
 
 		#values for sprite changes
 		self.frame = 0
@@ -47,6 +47,12 @@ class Player(object):
 
 	def update(self, dt, screen_rect):
 		future_rect = self.rect.move(0,0)
+
+		#Give the player more friction on the ground
+		if self.jumping == True:
+                        xdecel = 400
+                else:
+                        xdevel = 1000
 
 		"""if self.movement[0]:
 			future_rect.y -= self.yvel*dt
@@ -101,7 +107,7 @@ class Player(object):
 
 		if self.start_jump:
 			self.jumping = True
-			self.yvel = -1500
+			self.yvel = -600
 			self.start_jump = False
 
 		if self.jumping:
