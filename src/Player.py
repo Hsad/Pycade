@@ -40,12 +40,13 @@ class Player(object):
 		self.ducking = False
 
 		#acceleration and deceleration
-		self.xaccel = 4000
-		self.gravity = 7000
+
+		self.xaccel = 3000
+		self.gravity = 2000
 		self.xdecel = 2000
 
 		#max horizontal speed
-		self.xmax = 500
+		self.xmax = 400
 
 		#values for sprite changes
 		self.frame = 0
@@ -54,7 +55,7 @@ class Player(object):
 		self.framelength = 5
 
 	def update(self, dt, screen_rect):
-		future_rect = self.rect.move(0,0)
+		future_rect = self.rect.move(0,0)	
 
 		"""if self.movement[0]:
 			future_rect.y -= self.yvel*dt
@@ -111,7 +112,7 @@ class Player(object):
 
 		if self.start_jump:
 			self.jumping = True
-			self.yvel = -1500
+			self.yvel = -600
 			self.start_jump = False
 
 		if self.jumping:
@@ -170,4 +171,3 @@ class Player(object):
 			screen.blit(self.duck_image,self.duck_rect)
 		else:
 			screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), (2*self.state + self.direction) * 80 , 64, 80)) 
-		

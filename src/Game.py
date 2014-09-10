@@ -1,4 +1,4 @@
-import pygame, sys, Player, Knight
+import pygame, sys, Player, Platform, Knight
 
 class Game(object):
 	def __init__(self):
@@ -9,15 +9,18 @@ class Game(object):
 		self.player = Player.Player(self.screen)
 		self.testKnight = Knight.Knight(self.screen)
 		self.clock = pygame.time.Clock();
+		self.testPlatform = Platform.Platform("../assets/art/platformPlaceholder.png",500,500)
 		self.timer = pygame.time.get_ticks()
 		self.dt = 0
 		pygame.display.set_caption("A Team Won Game ")
 		self.backgroundImage = pygame.image.load("../assets/Art/BackgroundPlaceholder.jpg").convert_alpha()
 		self.backgroundRect = self.backgroundImage.get_rect()
 
+
 		"""apply the offset for 
 				  x y"""
 		offset = [0,0]
+
 
 		#self.elapsed = 0
 
@@ -58,17 +61,32 @@ class Game(object):
 				if event.key == pygame.K_d:
 					self.player.movement[3] = False
 
+	def checkCollisions(self, entity):
+		if entity.rect.colliderect(self.testPlatform.rect) and self.player.jumping :
+			if entity.rect.bottom > self.testPlatform.rect.top and self.player.yvel>0:
+				print "Hit Something!"
+
+				if  entity.rect.left < self.testPlatform.rect.right and entity.rect.right > self.testPlatform.rect.left:
+					self.player.jumping = False
+					entity.rect.bottom = self.testPlatform.rect.top
+					self.testPlatform.onPlatform = True
+						
+		if (entity.rect.left > self.testPlatform.rect.right or entity.rect.right < self.testPlatform.rect.left) and self.testPlatform.onPlatform :
+		 	self.player.jumping=True
+		 	self.testPlatform.onPlatform = False
+
 
 
 	def update(self):
 		self.player.update(self.dt, self.screen_rect)
 		self.testKnight.update(self.dt, self.screen_rect)
+		self.checkCollisions(self.player)
 
 	def draw(self):
 		#self.screen.fill((0,0,0))
 		self.screen.blit(self.backgroundImage,self.screen_rect)
 		#pygame.draw.line(self.screen,(0,0,0),(0,0),(300,300))
-
+		self.testPlatform.draw(self.screen)
 		self.player.draw(self.screen)
 		self.testKnight.draw(self.screen)
 
