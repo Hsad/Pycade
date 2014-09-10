@@ -32,12 +32,12 @@ class Player(object):
 		self.ducking = False
 
 		#acceleration and deceleration
-		self.xaccel = 1000
+		self.xaccel = 4000
 		self.gravity = 7000
 		self.xdecel = 2000
 
 		#max horizontal speed
-		self.xmax = 700
+		self.xmax = 500
 
 		#values for sprite changes
 		self.frame = 0
@@ -137,6 +137,8 @@ class Player(object):
 			self.frame += 1
 		if self.frame > self.framelength-1:
 			self.frame = 0
+
+		print self.xvel
 
 	def deceleration(self, dimension, dt):
 		if dimension == "x":
