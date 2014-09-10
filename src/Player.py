@@ -1,9 +1,16 @@
-import pygame
+import pygame	
 
 class Player(object):
 	def __init__(self, screen):
-		#left == 0, right == 1;
+		#left == 1, right == 0
 		self.direction = 0
+
+		"""State:
+			0 = running
+			1 = idle
+			2 = skidding
+		"""
+		self.state = 0
 		self.xpos = 0
 		self.ypos = screen.get_rect().height
 
@@ -29,6 +36,7 @@ class Player(object):
 		#they are in the air
 		self.jumping = False
 
+		#direction of player, facing right
 		self.ducking = False
 
 		#acceleration and deceleration
@@ -69,33 +77,35 @@ class Player(object):
 
 		#left
 		if self.movement[2] and not self.ducking:
+			self.direction = 1
 			if self.xvel > 0:
 				self.xvel -= self.xdecel*dt
-				self.direction = 4
+				self.state = 2
 				self.framelength = 2
 			else:
 				self.xvel -= self.xaccel*dt
 				self.framelength = 4
-				self.direction = 1
+				self.state = 0
 			if self.xvel < -self.xmax:
 				self.xvel = -self.xmax
 
 		#right
 		if self.movement[3] and not self.ducking:
+			self.direction = 0
 			if self.xvel < 0:
 				self.xvel += self.xdecel*dt
-				self.direction = 5
+				self.state = 2
 				self.framelength = 2
 			else:
 				self.xvel += self.xaccel*dt
 				self.framelength = 4
-				self.direction = 0
+				self.state = 0
 			if self.xvel > self.xmax:
 				self.xvel = self.xmax
 
 		if self.movement[2] == self.movement[3]:
 			self.deceleration("x", dt)
-			self.direction = 2
+			self.state = 1
 			self.framelength = 4
 
 
@@ -111,6 +121,8 @@ class Player(object):
 
 		future_rect.x += self.xvel*dt
 		future_rect.y += self.yvel*dt
+
+
 
 
 		#boundary checking
@@ -138,7 +150,7 @@ class Player(object):
 		if self.frame > self.framelength-1:
 			self.frame = 0
 
-		print self.xvel
+		print str(self.state) + str(self.direction)
 
 	def deceleration(self, dimension, dt):
 		if dimension == "x":
@@ -157,5 +169,5 @@ class Player(object):
 		if self.ducking:
 			screen.blit(self.duck_image,self.duck_rect)
 		else:
-			screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80)) 
+			screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), (2*self.state + self.direction) * 80 , 64, 80)) 
 		
