@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 
 class Knight(object):
   def __init__(self, screen, xStart, yStart):
@@ -25,12 +25,14 @@ class Knight(object):
     self.yvel = 0
 
     #acceleration and deceleration
-    self.xaccel = 200
+    self.xaccel = 200 + random.randint(-20,20)
     self.gravity = 700
-    self.xdecel = 500
+    self.xdecel = 500 + random.randint(-20,20)
+
+    self.jumping = False
 
     #max horizontal speed
-    self.xmax = 200
+    self.xmax = 200 + random.randint(-20,20)
 
     #values for sprite changes
     self.frame = 0
@@ -38,8 +40,7 @@ class Knight(object):
     self.framebuffer = 0
 
   def update(self, dt, screen_rect, player):
-    print player.rect.x
-    print self.rect.x
+
     if player.rect.x > self.rect.x:
       self.movement[2]=False
       self.movement[3]=True
