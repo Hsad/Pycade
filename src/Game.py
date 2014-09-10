@@ -7,7 +7,7 @@ class Game(object):
 		self.screen = pygame.display.set_mode((800,600))
 		self.screen_rect = self.screen.get_rect()
 		self.player = Player.Player(self.screen)
-		self.testKnight = Knight.Knight(self.screen)
+		self.testKnight = Knight.Knight(self.screen, 0, 0)
 		self.clock = pygame.time.Clock();
 		self.testPlatform = Platform.Platform("../assets/art/platformPlaceholder.png",500,500)
 		self.timer = pygame.time.get_ticks()
@@ -79,7 +79,8 @@ class Game(object):
 
 	def update(self):
 		self.player.update(self.dt, self.screen_rect)
-		self.testKnight.update(self.dt, self.screen_rect)
+		self.testKnight.update(self.dt, self.screen_rect, self.player)
+		
 		self.checkCollisions(self.player)
 
 	def draw(self):
@@ -89,4 +90,5 @@ class Game(object):
 		self.testPlatform.draw(self.screen)
 		self.player.draw(self.screen)
 		self.testKnight.draw(self.screen)
+		
 

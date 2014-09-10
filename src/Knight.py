@@ -1,15 +1,15 @@
 import pygame
 
 class Knight(object):
-  def __init__(self, screen):
+  def __init__(self, screen, xStart, yStart):
 
     pygame.font.init() #debug
     self.Dfont = pygame.font.Font(None, 40) #debug
     self.Dvar = 0 #debug
 
     self.direction = 0 #0 left, 1 right
-    self.xpos = 0
-    self.ypos = screen.get_rect().height
+    self.xpos = xStart
+    self.ypos = yStart + screen.get_rect().height
 
     self.image = pygame.image.load("../assets/Art/knight_walk.png").convert_alpha()
     self.magicCubeImage = pygame.image.load("../assets/Art/PlayerDuckingPlaceholder.png") #debug
@@ -37,7 +37,16 @@ class Knight(object):
     self.framerate = 2
     self.framebuffer = 0
 
-  def update(self, dt, screen_rect):
+  def update(self, dt, screen_rect, player):
+    print player.rect.x
+    print self.rect.x
+    if player.rect.x > self.rect.x:
+      self.movement[2]=False
+      self.movement[3]=True
+    else:
+      self.movement[2]=True
+      self.movement[3]=False      
+
     future_rect = self.rect.move(0,0)
 
     if self.movement[2]: #left
@@ -108,5 +117,5 @@ class Knight(object):
     screen.blit(self.magicCubeImage, self.cubeRect)
     self.text = self.Dfont.render(str(self.xvel), 0, pygame.Color("red"), pygame.Color("black"))
     screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-50, 10,10))
-    self.text = self.Dfont.render(str(self.direction), 0, pygame.Color("red"), pygame.Color("black"))
+    self.text = self.Dfont.render(str(self.rect.x), 0, pygame.Color("red"), pygame.Color("black"))
     screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-100, 10,10))

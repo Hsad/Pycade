@@ -151,7 +151,7 @@ class Player(object):
 		if self.frame > self.framelength-1:
 			self.frame = 0
 
-		print str(self.state) + str(self.direction)
+		#print str(self.state) + str(self.direction)
 
 	def deceleration(self, dimension, dt):
 		if dimension == "x":
