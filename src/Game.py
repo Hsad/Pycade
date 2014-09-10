@@ -1,4 +1,4 @@
-import pygame, sys, Player
+import pygame, sys, Player, Knight
 
 class Game(object):
 	def __init__(self):
@@ -7,6 +7,7 @@ class Game(object):
 		self.screen = pygame.display.set_mode((800,600))
 		self.screen_rect = self.screen.get_rect()
 		self.player = Player.Player(self.screen)
+		self.testKnight = Knight.Knight(self.screen)
 		self.clock = pygame.time.Clock();
 		self.timer = pygame.time.get_ticks()
 		self.dt = 0
@@ -61,6 +62,7 @@ class Game(object):
 
 	def update(self):
 		self.player.update(self.dt, self.screen_rect)
+		self.testKnight.update(self.dt, self.screen_rect)
 
 	def draw(self):
 		#self.screen.fill((0,0,0))
@@ -68,4 +70,5 @@ class Game(object):
 		#pygame.draw.line(self.screen,(0,0,0),(0,0),(300,300))
 
 		self.player.draw(self.screen)
+		self.testKnight.draw(self.screen)
 
