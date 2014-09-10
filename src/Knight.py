@@ -57,12 +57,16 @@ class Knight(object):
     future_rect.y += self.yvel*dt
 
     #bound check
-    if future_rect.right > screen_rect.right:
-      future_rect.right = screen_rect.right
+    if future_rect.right > screen_rect.right + 500:
+      future_rect.right = screen_rect.right + 500
       self.xvel = 0
-    if future_rect.left < 0:
-      future_rect.left = 0
+      self.movement[3] = False
+      self.movement[2] = True
+    if future_rect.left <  -500:
+      future_rect.left =  -500
       self.xvel = 0
+      self.movement[3] = True
+      self.movement[2] = False
     if future_rect.top < 0:
       future_rect.top = 0
     if future_rect.bottom > screen_rect.bottom:
