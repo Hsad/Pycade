@@ -1,11 +1,11 @@
 import pygame
 
-class Platform(object):
+class Ladder(object):
 	
 	def __init__(self,filePath,xpos,ypos, ):
 		self.image = pygame.image.load(filePath).convert_alpha()	
 		self.rect= self.image.get_rect()
-		self.onPlatform = False
+		self.onLadder = False
 		
 		self.rect.x = xpos
 		self.rect.y = ypos
