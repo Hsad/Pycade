@@ -19,6 +19,7 @@ class Game(object):
 		pygame.display.set_caption("A Team Won Game ")
 		self.backgroundImage = pygame.image.load("../assets/Art/BackgroundPlaceholder.jpg").convert_alpha()
 		self.backgroundRect = self.backgroundImage.get_rect()
+		self.camerax = 0
 
 
 		"""apply the offset for 
@@ -145,14 +146,26 @@ class Game(object):
 		self.player.update(self.dt, self.screen_rect)
 		
 		#Moves the tiles to give the illusion of player movement
-		for ladder in self.ladderList:
-			ladder.rect.x -= self.player.movement_amount
-		for platform in self.platform_boundaries_list:
-			platform.rect.x -= self.player.movement_amount
-		for platform in self.platform_draw_list:
-			platform.rect.x -= self.player.movement_amount
-		for knight in self.knightList:
-			knight.rect.x -= self.player.movement_amount
+		if self.camerax + self.player.movement_amount >= 0:
+			self.camerax += self.player.movement_amount
+			for ladder in self.ladderList:
+				ladder.rect.x -= self.player.movement_amount
+			for platform in self.platform_boundaries_list:
+				platform.rect.x -= self.player.movement_amount
+			for platform in self.platform_draw_list:
+				platform.rect.x -= self.player.movement_amount
+			for knight in self.knightList:
+				knight.rect.x -= self.player.movement_amount
+		elif self.camerax + self.player.movement_amount < 0:
+			for ladder in self.ladderList:
+				ladder.rect.x -= self.camerax
+			for platform in self.platform_boundaries_list:
+				platform.rect.x -= self.camerax
+			for platform in self.platform_draw_list:
+				platform.rect.x -= self.camerax
+			for knight in self.knightList:
+				knight.rect.x -= self.camerax
+			self.camerax = 0
 
 		for kUp in self.knightList:
 			kUp.update(self.dt, self.screen_rect, self.player)
