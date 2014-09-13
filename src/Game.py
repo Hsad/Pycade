@@ -49,17 +49,24 @@ class Game(object):
 			for self.symbol in self.platform_file_line:
 				if self.symbol == "P":
 					if self.previous_tile_is_platform:
+						print "adding platform to platform - " + str(self.platformx) + ", " + str(self.platformy)
 						self.platform_boundaries_list[-1].rect.width += 40
 					else:
+						print "creating a new platform boundary - " + str(self.platformx) + ", " + str(self.platformy)
 						self.platform_boundaries_list.append(Platform.Platform("../assets/art/platformPlaceholder.png",self.platformx,self.platformy))
 					self.platform_draw_list.append(Platform.Platform("../assets/art/platformPlaceholder.png",self.platformx,self.platformy))
 					self.previous_tile_is_platform = True
+				elif self.symbol == "L":
+					if self.previous_tile_is_platform:
+						print "adding ladder to platform - " + str(self.platformx) + ", " + str(self.platformy)
+						self.platform_boundaries_list[-1].rect.width += 40
+					self.ladderList.append(Ladder.Ladder("../assets/art/Ladder Placeholder.png", self.platformx, self.platformy))
 				else:
 					self.previous_tile_is_platform = False
-				if self.symbol == "L":
-					self.ladderList.append(Ladder.Ladder("../assets/art/Ladder Placeholder.png", self.platformx, self.platformy))
 				self.platformx += 40
 			self.platformy += 40
+			
+		print "Number of platform boundaries: " + str(len(self.platform_boundaries_list))
 
 	def process_events(self):
 		for event in pygame.event.get():
@@ -116,8 +123,8 @@ class Game(object):
 						
 
 			if (entity.rect.left > ladder.rect.right or entity.rect.right < ladder.rect.left) and ladder.onLadder :
-		 		self.player.jumping=True
-		 		ladder.onLadder = False			
+				self.player.jumping=True
+		 		ladder.onLadder = False
 
 		for platform in self.platform_boundaries_list:
 			if entity.rect.colliderect(platform) and self.player.jumping:
@@ -152,7 +159,3 @@ class Game(object):
 
 		for kDraw in self.knightList:
 			kDraw.draw(self.screen)
-			
-		for platform in self.platform_boundaries_list:
-			print platform.rect.width
-
