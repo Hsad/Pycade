@@ -22,7 +22,7 @@ class Player(object):
 		#rects
 		self.duck_rect = self.duck_image.get_rect()
 		self.rect = pygame.Rect(0,0,64,80)
-
+		self.future_rect =self.rect
 		self.rect.x = 0
 		self.rect.y = screen.get_rect().height
 		#up, down, left, right
@@ -37,7 +37,11 @@ class Player(object):
 		self.jumping = False
 
 		#direction of player, facing right
+		#some player states
 		self.ducking = False
+		self.onLadder= False
+		self.onPlatform = False
+		self.currentPlatform = None
 
 		#acceleration and deceleration
 
@@ -55,12 +59,12 @@ class Player(object):
 		self.framelength = 4
 
 	def update(self, dt, screen_rect):
-		future_rect = self.rect.move(0,0)	
+		self.future_rect = self.rect.move(0,0)	
 
 		"""if self.movement[0]:
-			future_rect.y -= self.yvel*dt
+			self.future_rect.y -= self.yvel*dt
 		if self.movement[1]:
-			future_rect.y += self.yvel*dt"""
+			self.future_rect.y += self.yvel*dt"""
 
 		if self.movement[1]:
 			self.ducking = True
@@ -123,26 +127,26 @@ class Player(object):
 		else:
 			self.yvel = 0
 
-		future_rect.x += self.xvel*dt
-		future_rect.y += self.yvel*dt
+		self.future_rect.x += self.xvel*dt
+		self.future_rect.y += self.yvel*dt
 
 
 
 
 		#boundary checking
-		if future_rect.right > screen_rect.right:
-			future_rect.right = screen_rect.right
+		if self.future_rect.right > screen_rect.right:
+			self.future_rect.right = screen_rect.right
 			self.xvel = 0
-		if future_rect.left < 0:
-			future_rect.left = 0
+		if self.future_rect.left < 0:
+			self.future_rect.left = 0
 			self.xvel = 0
-		if future_rect.top < 0:
-			future_rect.top = 0
-		if future_rect.bottom > screen_rect.bottom:
-			future_rect.bottom = screen_rect.bottom
+		if self.future_rect.top < 0:
+			self.future_rect.top = 0
+		if self.future_rect.bottom > screen_rect.bottom:
+			self.future_rect.bottom = screen_rect.bottom
 			self.jumping = False
 
-		self.rect = future_rect
+		self.rect = self.future_rect
 
 
 
