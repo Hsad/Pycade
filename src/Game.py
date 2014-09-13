@@ -49,25 +49,23 @@ class Game(object):
 			for self.symbol in self.platform_file_line:
 				if self.symbol == "P":
 					if self.previous_tile_is_platform:
-						print "adding platform to platform - " + str(self.platformx) + ", " + str(self.platformy)
 						self.platform_boundaries_list[-1].rect.width += 40
 					else:
-						print "creating a new platform boundary - " + str(self.platformx) + ", " + str(self.platformy)
 						self.platform_boundaries_list.append(Platform.Platform("../assets/art/platformPlaceholder.png",self.platformx,self.platformy))
 					self.platform_draw_list.append(Platform.Platform("../assets/art/platformPlaceholder.png",self.platformx,self.platformy))
 					self.previous_tile_is_platform = True
 				elif self.symbol == "L":
 					if self.previous_tile_is_platform:
-						print "adding ladder to platform - " + str(self.platformx) + ", " + str(self.platformy)
 						self.platform_boundaries_list[-1].rect.width += 40
 					self.ladderList.append(Ladder.Ladder("../assets/art/Ladder Placeholder.png", self.platformx, self.platformy))
 				else:
 					self.previous_tile_is_platform = False
+				if self.symbol == "S":
+					self.player.rect.x = self.platformx
+					self.player.rect.y = self.platformy
 				self.platformx += 40
 			self.platformy += 40
 			
-		print "Number of platform boundaries: " + str(len(self.platform_boundaries_list))
-
 	def process_events(self):
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -105,6 +103,20 @@ class Game(object):
 					self.player.movement[3] = False
 
 	def checkCollisions(self, entity):
+		for platform in self.platform_boundaries_list:
+			if entity.rect.colliderect(platform) and self.player.jumping:
+				if entity.rect.bottom > platform.rect.top and self.player.yvel>0:
+					if  entity.rect.left < platform.rect.right and entity.rect.right > platform.rect.left:
+						self.player.jumping = False
+						entity.rect.bottom = platform.rect.top
+						platform.onPlatform = True
+			if (entity.rect.left > platform.rect.right or entity.rect.right < platform.rect.left) and platform.onPlatform :
+				self.player.jumping=True
+				platform.onPlatform = False
+				
+			if platform.onPlatform:
+				entity.onPlatform = True
+				
 		for ladder in self.ladderList:
 			if entity.rect.colliderect(ladder.rect):
 				if entity.rect.centerx > ladder.rect.left and entity.rect.centerx < ladder.rect.right:
@@ -123,24 +135,24 @@ class Game(object):
 						
 
 			if (entity.rect.left > ladder.rect.right or entity.rect.right < ladder.rect.left) and ladder.onLadder :
-				self.player.jumping=True
 		 		ladder.onLadder = False
-
-		for platform in self.platform_boundaries_list:
-			if entity.rect.colliderect(platform) and self.player.jumping:
-				if entity.rect.bottom > platform.rect.top and self.player.yvel>0:
-					if  entity.rect.left < platform.rect.right and entity.rect.right > platform.rect.left:
-						self.player.jumping = False
-						entity.rect.bottom = platform.rect.top
-						platform.onPlatform = True
-			if (entity.rect.left > platform.rect.right or entity.rect.right < platform.rect.left) and platform.onPlatform :
-				self.player.jumping=True
-				platform.onPlatform = False
+				if entity.onPlatform == False:
+					self.player.jumping = True
 
 
 
 	def update(self):
 		self.player.update(self.dt, self.screen_rect)
+		
+		#Moves the tiles to give the illusion of player movement
+		for ladder in self.ladderList:
+			ladder.rect.x -= self.player.movement_amount
+		for platform in self.platform_boundaries_list:
+			platform.rect.x -= self.player.movement_amount
+		for platform in self.platform_draw_list:
+			platform.rect.x -= self.player.movement_amount
+		for knight in self.knightList:
+			knight.rect.x -= self.player.movement_amount
 
 		for kUp in self.knightList:
 			kUp.update(self.dt, self.screen_rect, self.player)
