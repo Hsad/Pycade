@@ -25,6 +25,8 @@ class Player(object):
 		self.duck_rect = self.duck_image.get_rect()
 		self.rect = pygame.Rect(0,0,64,80)
 		self.movement_amount = 0
+		self.camerax = 0
+		self.maxx = 4000 #The width of the level
 
 		self.rect.x = 0
 		self.rect.y = screen.get_rect().height
@@ -148,14 +150,19 @@ class Player(object):
 
 		#Make the player "move" based on their inputs
 		self.movement_amount = future_rect.x - self.rect.x
-		if self.direction == 1: #If we're moving left, the player stops 100 pixels to the left of the middle of the screen
-			if self.rect.x >= self.screen.get_rect().width/2-100:
-				self.rect = future_rect
-		if self.direction == 0: #If we're moving right the player stops 100 pixels to the right of the middle of the screen
-			if self.rect.x <= self.screen.get_rect().width/2+100:
-				self.rect = future_rect
-		if self.jumping:
-			self.rect.y = future_rect.y
+		print str(self.camerax)
+		print str(self.movement_amount)
+		if self.camerax + self.movement_amount >= 0 and self.camerax + self.movement_amount <= self.maxx:
+			if self.direction == 1: #If we're moving left, the player stops 100 pixels to the left of the middle of the screen
+				if self.rect.x >= self.screen.get_rect().width/2-100:
+					self.rect = future_rect
+			if self.direction == 0: #If we're moving right the player stops 100 pixels to the right of the middle of the screen
+				if self.rect.x <= self.screen.get_rect().width/2+100:
+					self.rect = future_rect
+			if self.jumping:
+				self.rect.y = future_rect.y
+		else:
+			self.rect = future_rect
 
 
 
