@@ -33,25 +33,40 @@ class Game(object):
 		#Generate a list of rects from a text file named Platform.txt
 		#Type - where there isn't a platform
 		#Type P where there's a standard platform
-		self.platform_list_file = open("Platforms.txt", "r")
-		self.platform_list = []
+		self.platform_file = open("Platforms.txt", "r")
+		self.platform_boundaries_list = []
+		self.platform_draw_list = []
 		self.platformx = 0
 		self.platformy = 0
+		self.previous_tile_is_platform = False
 		
-		for self.line in self.platform_list_file:
+		#Parse the text file
+		for self.line in self.platform_file:
 			self.platformx = 0
-			self.platform_list_file_line = []
-			self.platform_list_file_line = self.line.strip()
-			self.platform_list_file_line = self.line.split()
-			for self.symbol in self.platform_list_file_line:
+			self.platform_file_line = []
+			self.platform_file_line = self.line.strip()
+			self.platform_file_line = self.line.split()
+			for self.symbol in self.platform_file_line:
 				if self.symbol == "P":
-					self.temp_platform = Platform.Platform("../assets/art/platformPlaceholder.png",self.platformx,self.platformy)
-					self.platform_list.append(self.temp_platform)
-				if self.symbol == "L":
-					self.temp_ladder = Ladder.Ladder("../assets/art/Ladder Placeholder.png", self.platformx, self.platformy)
-					self.ladderList.append(self.temp_ladder)
+					if self.previous_tile_is_platform:
+						print "adding platform to platform - " + str(self.platformx) + ", " + str(self.platformy)
+						self.platform_boundaries_list[-1].rect.width += 40
+					else:
+						print "creating a new platform boundary - " + str(self.platformx) + ", " + str(self.platformy)
+						self.platform_boundaries_list.append(Platform.Platform("../assets/art/platformPlaceholder.png",self.platformx,self.platformy))
+					self.platform_draw_list.append(Platform.Platform("../assets/art/platformPlaceholder.png",self.platformx,self.platformy))
+					self.previous_tile_is_platform = True
+				elif self.symbol == "L":
+					if self.previous_tile_is_platform:
+						print "adding ladder to platform - " + str(self.platformx) + ", " + str(self.platformy)
+						self.platform_boundaries_list[-1].rect.width += 40
+					self.ladderList.append(Ladder.Ladder("../assets/art/Ladder Placeholder.png", self.platformx, self.platformy))
+				else:
+					self.previous_tile_is_platform = False
 				self.platformx += 40
 			self.platformy += 40
+			
+		print "Number of platform boundaries: " + str(len(self.platform_boundaries_list))
 
 	def process_events(self):
 		for event in pygame.event.get():
@@ -108,14 +123,12 @@ class Game(object):
 						
 
 			if (entity.rect.left > ladder.rect.right or entity.rect.right < ladder.rect.left) and ladder.onLadder :
-		 		self.player.jumping=True
-		 		ladder.onLadder = False			
+				self.player.jumping=True
+		 		ladder.onLadder = False
 
-		for platform in self.platform_list:
+		for platform in self.platform_boundaries_list:
 			if entity.rect.colliderect(platform) and self.player.jumping:
 				if entity.rect.bottom > platform.rect.top and self.player.yvel>0:
-					print "Hit Something!"
-
 					if  entity.rect.left < platform.rect.right and entity.rect.right > platform.rect.left:
 						self.player.jumping = False
 						entity.rect.bottom = platform.rect.top
@@ -140,10 +153,9 @@ class Game(object):
 		#pygame.draw.line(self.screen,(0,0,0),(0,0),(300,300))
 		for ladder in self.ladderList:
 			ladder.draw(self.screen)
-		for platform in self.platform_list:
+		for platform in self.platform_draw_list:
 			platform.draw(self.screen)
 		self.player.draw(self.screen)
 		#knights
 		for kDraw in self.knightList:
 			kDraw.draw(self.screen)
-
