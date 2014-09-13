@@ -8,9 +8,9 @@ class Game(object):
 		self.screen_rect = self.screen.get_rect()
 		self.player = Player.Player(self.screen)
 		self.knightList = []
-		for x in range(5):
+		"""for x in range(5):
 			KN = Knight.Knight(self.screen, x*20, 0)
-			self.knightList.append(KN)
+			self.knightList.append(KN)"""
 
 		self.clock = pygame.time.Clock()
 		self.ladderList = []
@@ -63,6 +63,8 @@ class Game(object):
 				if self.symbol == "S":
 					self.player.rect.x = self.platformx
 					self.player.rect.y = self.platformy
+				if self.symbol == "K":
+					self.knightList.append(Knight.Knight(self.screen, self.platformx, self.platformy))
 				self.platformx += 40
 			self.platformy += 40
 			
