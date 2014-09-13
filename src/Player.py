@@ -2,6 +2,8 @@ import pygame
 
 class Player(object):
 	def __init__(self, screen):
+		self.screen = screen
+		
 		#left == 1, right == 0
 		self.direction = 0
 
@@ -22,6 +24,7 @@ class Player(object):
 		#rects
 		self.duck_rect = self.duck_image.get_rect()
 		self.rect = pygame.Rect(0,0,64,80)
+		self.movement_amount = 0
 
 		self.rect.x = 0
 		self.rect.y = screen.get_rect().height
@@ -44,6 +47,7 @@ class Player(object):
 		self.xaccel = 3000
 		self.gravity = 2000
 		self.xdecel = 2000
+		self.onPlatform = False
 
 		#max horizontal speed
 		self.xmax = 400
@@ -142,7 +146,16 @@ class Player(object):
 			future_rect.bottom = screen_rect.bottom
 			self.jumping = False
 
-		self.rect = future_rect
+		#Make the player "move" based on their inputs
+		self.movement_amount = future_rect.x - self.rect.x
+		if self.direction == 1: #If we're moving left, the player stops 100 pixels to the left of the middle of the screen
+			if self.rect.x >= self.screen.get_rect().width/2-100:
+				self.rect = future_rect
+		if self.direction == 0: #If we're moving right the player stops 100 pixels to the right of the middle of the screen
+			if self.rect.x <= self.screen.get_rect().width/2+100:
+				self.rect = future_rect
+		if self.jumping:
+			self.rect.y = future_rect.y
 
 
 
