@@ -7,6 +7,7 @@ class Game(object):
 		self.screen = pygame.display.set_mode((800,600))
 		self.screen_rect = self.screen.get_rect()
 		self.player = Player.Player(self.screen)
+		#initilizing Knight Array
 		self.knightList = []
 		for x in range(5):
 			KN = Knight.Knight(self.screen, x*20, 0)
@@ -21,8 +22,7 @@ class Game(object):
 		self.backgroundRect = self.backgroundImage.get_rect()
 
 
-		"""apply the offset for 
-				  x y"""
+		"""apply the offset for x y"""
 		offset = [0,0]
 
 
@@ -128,9 +128,9 @@ class Game(object):
 
 	def update(self):
 		self.player.update(self.dt, self.screen_rect)
-
+		#knights
 		for kUp in self.knightList:
-			kUp.update(self.dt, self.screen_rect, self.player)
+			kUp.update(self.dt, self.screen_rect, self.player, self.knightList)
 		
 		self.checkCollisions(self.player)
 
@@ -143,7 +143,7 @@ class Game(object):
 		for platform in self.platform_list:
 			platform.draw(self.screen)
 		self.player.draw(self.screen)
-
+		#knights
 		for kDraw in self.knightList:
 			kDraw.draw(self.screen)
 

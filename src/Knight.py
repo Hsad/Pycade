@@ -8,14 +8,18 @@ class Knight(object):
     self.Dvar = 0 #debug
 
     self.direction = 0 #0 left, 1 right
-    self.xpos = xStart
+    self.xpos = xStart	
     self.ypos = yStart + screen.get_rect().height
 
-    self.image = pygame.image.load("../assets/Art/knight_walk.png").convert_alpha()
-    self.magicCubeImage = pygame.image.load("../assets/Art/PlayerDuckingPlaceholder.png") #debug
-    self.cubeRect = pygame.Rect(0,0,64,64) #debug
-    self.cubeRect.x = screen.get_rect().centerx #debug
-    self.cubeRect.y = screen.get_rect().centery #debug 
+    self.enemy = False
+    if self.enemy = False:
+      self.image = pygame.image.load("../assets/Art/knight_walk.png").convert_alpha() #allied 
+    else:
+      self.image = pygame.image.load("../assets/Art/knight_walk.png").convert_alpha() #enemy (not implemented)
+    #self.magicCubeImage = pygame.image.load("../assets/Art/PlayerDuckingPlaceholder.png") #debug
+    #self.cubeRect = pygame.Rect(0,0,64,64) #debug
+    #self.cubeRect.x = screen.get_rect().centerx #debug
+    #self.cubeRect.y = screen.get_rect().centery #debug 
     self.rect = pygame.Rect(0,0,64,80)
     self.rect.x = self.xpos
     self.rect.y = self.ypos - self.rect.height
@@ -40,13 +44,23 @@ class Knight(object):
     self.framebuffer = 0
 
   def update(self, dt, screen_rect, player):
-
+    #if player is to the left or right of the knight
     if player.rect.x > self.rect.x:
       self.movement[2]=False
       self.movement[3]=True
     else:
       self.movement[2]=True
       self.movement[3]=False      
+    #if player is above or below knight
+    if player.rect.y > self.rect.y: #player is below knight
+      self.movement[1]=True
+      self.movement[0]
+    elif player.rect.y < self.rect.y: #player is above
+      self.movement[0]=True
+      self.movement[1]=False
+    else:
+      self.movement[0]=False
+      self.movement[1]=False
 
     future_rect = self.rect.move(0,0)
 
@@ -75,7 +89,7 @@ class Knight(object):
     future_rect.x += self.xvel*dt
     future_rect.y += self.yvel*dt
 
-    self.cubeRect.x -= self.xvel
+    #self.cubeRect.x -= self.xvel
 
     #bound check
     if future_rect.right > screen_rect.right + 100:
@@ -113,9 +127,9 @@ class Knight(object):
 	if self.xvel < 0:
 	  self.xvel = 0
 
-  def draw(self,screen):
+  def draw(self,screen,offset):
     screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80)) 
-    screen.blit(self.magicCubeImage, self.cubeRect)
+    #screen.blit(self.magicCubeImage, self.cubeRect)
     self.text = self.Dfont.render(str(self.xvel), 0, pygame.Color("red"), pygame.Color("black"))
     screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-50, 10,10))
     self.text = self.Dfont.render(str(self.rect.x), 0, pygame.Color("red"), pygame.Color("black"))
