@@ -9,9 +9,9 @@ class Game(object):
 		self.player = Player.Player(self.screen)
 		#initilizing Knight Array
 		self.knightList = []
-		for x in range(5):
+		"""for x in range(5):
 			KN = Knight.Knight(self.screen, x*20, 0)
-			self.knightList.append(KN)
+			self.knightList.append(KN)"""
 
 		self.clock = pygame.time.Clock()
 		self.ladderList = []
@@ -49,24 +49,29 @@ class Game(object):
 			for self.symbol in self.platform_file_line:
 				if self.symbol == "P":
 					if self.previous_tile_is_platform:
-						print "adding platform to platform - " + str(self.platformx) + ", " + str(self.platformy)
+
+
 						self.platform_boundaries_list[-1].rect.width += 40
 					else:
-						print "creating a new platform boundary - " + str(self.platformx) + ", " + str(self.platformy)
+
 						self.platform_boundaries_list.append(Platform.Platform("../assets/art/platformPlaceholder.png",self.platformx,self.platformy))
 					self.platform_draw_list.append(Platform.Platform("../assets/art/platformPlaceholder.png",self.platformx,self.platformy))
 					self.previous_tile_is_platform = True
 				elif self.symbol == "L":
 					if self.previous_tile_is_platform:
-						print "adding ladder to platform - " + str(self.platformx) + ", " + str(self.platformy)
+
+
 						self.platform_boundaries_list[-1].rect.width += 40
 					self.ladderList.append(Ladder.Ladder("../assets/art/Ladder Placeholder.png", self.platformx, self.platformy))
 				else:
 					self.previous_tile_is_platform = False
+				if self.symbol == "S":
+					self.player.rect.x = self.platformx
+					self.player.rect.y = self.platformy
+				if self.symbol == "K":
+					self.knightList.append(Knight.Knight(self.screen, self.platformx, self.platformy))
 				self.platformx += 40
 			self.platformy += 40
-			
-		print "Number of platform boundaries: " + str(len(self.platform_boundaries_list))
 
 	def process_events(self):
 		for event in pygame.event.get():
@@ -105,27 +110,6 @@ class Game(object):
 					self.player.movement[3] = False
 
 	def checkCollisions(self, entity):
-		for ladder in self.ladderList:
-			if entity.rect.colliderect(ladder.rect):
-				if entity.rect.centerx > ladder.rect.left and entity.rect.centerx < ladder.rect.right:
-					ladder.onLadder = True
-					if entity.movement[0]and ladder.onLadder:
-						entity.rect.centerx = ladder.rect.centerx
-						entity.jumping = False
-						entity.rect.y -= 10
-						if entity.rect.bottom< ladder.rect.top:
-							entity.rect.bottom = ladder.rect.top
-					if entity.movement[1]and ladder.onLadder:
-						entity.rect.centerx = ladder.rect.centerx
-						entity.jumping = False
-						entity.ducking = False
-						entity.rect.y += 10
-						
-
-			if (entity.rect.left > ladder.rect.right or entity.rect.right < ladder.rect.left) and ladder.onLadder :
-				self.player.jumping=True
-		 		ladder.onLadder = False
-
 		for platform in self.platform_boundaries_list:
 			if entity.rect.colliderect(platform) and self.player.jumping:
 				if entity.rect.bottom > platform.rect.top and self.player.yvel>0:
@@ -136,11 +120,76 @@ class Game(object):
 			if (entity.rect.left > platform.rect.right or entity.rect.right < platform.rect.left) and platform.onPlatform :
 				self.player.jumping=True
 				platform.onPlatform = False
+				
+			if platform.onPlatform:
+				entity.onPlatform = True
+				
+		for ladder in self.ladderList:
+			if entity.rect.colliderect(ladder.rect):
+				if entity.rect.centerx > ladder.rect.left and entity.rect.centerx < ladder.rect.right:
+					ladder.onLadder = True
+					if entity.movement[0]and ladder.onLadder:
+						entity.rect.centerx = ladder.rect.centerx
+						entity.jumping = False
+						entity.rect.y -= 10 *self.dt
+						if entity.rect.bottom< ladder.rect.top:
+							entity.rect.bottom = ladder.rect.top
+					if entity.movement[1]and ladder.onLadder:
+						entity.rect.centerx = ladder.rect.centerx
+						entity.jumping = False
+						entity.ducking = False
+						entity.rect.y += 10 * self.dt
+						
+
+			if (entity.rect.left > ladder.rect.right or entity.rect.right < ladder.rect.left) and ladder.onLadder :
+
+				entity.jumping=True
+		 		ladder.onLadder = False
+
+		for platform in self.platform_boundaries_list:				
+			if entity.future_rect.colliderect(platform) and entity.jumping: 
+				entity.currentPlatform = platform;
+				if entity.future_rect.bottom > entity.currentPlatform.rect.top and self.player.yvel>0:
+					if  entity.future_rect.left < entity.currentPlatform.rect.right and entity.future_rect.right > entity.currentPlatform.rect.left:# and (entity.rect.bottom > entity.currentPlatform.rect.top): 
+						entity.jumping = False
+						entity.future_rect.bottom = entity.currentPlatform.rect.top
+						entity.onPlatform = True
+						break;
+					if (entity.future_rect.left > entity.currentPlatform.rect.right or entity.future_rect.right < entity.currentPlatform.rect.left):
+						entity.onPlatform = False
+			if entity.currentPlatform and (entity.future_rect.left > entity.currentPlatform.rect.right or entity.future_rect.right < entity.currentPlatform.rect.left) and entity.onPlatform:
+				entity.jumping=True
+				entity.currentPlatform = None
+				#entity.onPlatform = False
+
+
 
 
 
 	def update(self):
-		self.player.update(self.dt, self.screen_rect)
+		self.player.update(self.dt, self.screen_rect)		
+		#Moves the tiles to give the illusion of player movement
+		if self.player.camerax + self.player.movement_amount >= 0 and self.player.camerax <= self.player.maxx:
+			self.player.camerax += self.player.movement_amount
+			for ladder in self.ladderList:
+				ladder.rect.x -= self.player.movement_amount
+			for platform in self.platform_boundaries_list:
+				platform.rect.x -= self.player.movement_amount
+			for platform in self.platform_draw_list:
+				platform.rect.x -= self.player.movement_amount
+			for knight in self.knightList:
+				knight.rect.x -= self.player.movement_amount
+		elif self.player.camerax + self.player.movement_amount < 0:
+			for ladder in self.ladderList:
+				ladder.rect.x -= self.player.camerax
+			for platform in self.platform_boundaries_list:
+				platform.rect.x -= self.player.camerax
+			for platform in self.platform_draw_list:
+				platform.rect.x -= self.player.camerax
+			for knight in self.knightList:
+				knight.rect.x -= self.player.camerax
+			self.player.camerax = 0
+
 		#knights
 		for kUp in self.knightList:
 			kUp.update(self.dt, self.screen_rect, self.player, self.knightList, self.platform_boundaries_list, self.ladderList)
