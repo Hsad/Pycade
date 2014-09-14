@@ -128,7 +128,6 @@ class Knight(object):
     tempMidAir = True
     for plat in platforms:
       if self.footBoxRect.colliderect(plat.rect): #feet are colliding with a platform
-	print "colliding with ground"
 	if self.midAir == True: #just landing
 	  if self.footBoxRect.centery > plat.rect.top: #hit box is colliding and feet are down below plat
 	    tempMidAir = False
