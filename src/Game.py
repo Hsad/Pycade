@@ -143,7 +143,7 @@ class Game(object):
 		self.player.update(self.dt, self.screen_rect)
 		#knights
 		for kUp in self.knightList:
-			kUp.update(self.dt, self.screen_rect, self.player, self.knightList)
+			kUp.update(self.dt, self.screen_rect, self.player, self.knightList, self.platform_boundaries_list, self.ladderList)
 		
 		self.checkCollisions(self.player)
 

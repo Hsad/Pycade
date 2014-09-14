@@ -10,9 +10,10 @@ class Knight(object):
     self.direction = 0 #0 left, 1 right
     self.xpos = xStart	
     self.ypos = yStart + screen.get_rect().height
+    self.midAir = False # weather or not player is in air, to set gravity of not
 
     self.enemy = False
-    if self.enemy = False:
+    if self.enemy == False:
       self.image = pygame.image.load("../assets/Art/knight_walk.png").convert_alpha() #allied 
     else:
       self.image = pygame.image.load("../assets/Art/knight_walk.png").convert_alpha() #enemy (not implemented)
@@ -20,9 +21,15 @@ class Knight(object):
     #self.cubeRect = pygame.Rect(0,0,64,64) #debug
     #self.cubeRect.x = screen.get_rect().centerx #debug
     #self.cubeRect.y = screen.get_rect().centery #debug 
+    
     self.rect = pygame.Rect(0,0,64,80)
     self.rect.x = self.xpos
     self.rect.y = self.ypos - self.rect.height
+    
+    self.footBoxImg = pygame.image.load("../assets/Art/knightFootBox.png")
+    self.footBoxRect =  pygame.Rect(0,0,32,20)
+    self.footBoxRect.centerx = self.rect.x
+    self.footBoxRect.centery = self.rect.bottom
 
     self.movement = [False, False, False, True] #up down left right
     self.xvel = 0
@@ -43,7 +50,7 @@ class Knight(object):
     self.framerate = 2
     self.framebuffer = 0
 
-  def update(self, dt, screen_rect, player):
+  def update(self, dt, screen_rect, player, knightList, platforms, ladders):
     #if player is to the left or right of the knight
     if player.rect.x > self.rect.x:
       self.movement[2]=False
@@ -54,7 +61,7 @@ class Knight(object):
     #if player is above or below knight
     if player.rect.y > self.rect.y: #player is below knight
       self.movement[1]=True
-      self.movement[0]
+      self.movement[0]=False
     elif player.rect.y < self.rect.y: #player is above
       self.movement[0]=True
       self.movement[1]=False
@@ -62,7 +69,11 @@ class Knight(object):
       self.movement[0]=False
       self.movement[1]=False
 
-    future_rect = self.rect.move(0,0)
+    #set preview hit box
+    futureRect = self.rect.move(0,0)
+    self.footBoxRect.centerx = futureRect.centerx
+    self.footBoxRect.centery = futureRect.bottom
+
 
     if self.movement[2]: #left
       if self.xvel > 0:
@@ -73,7 +84,6 @@ class Knight(object):
       if self.xvel < -self.xmax:
 	self.xvel = -self.xmax
 
-
     if self.movement[3]: #right
       if self.xvel < 0:
 	self.xvel+=self.xdecel*dt
@@ -83,28 +93,57 @@ class Knight(object):
       if self.xvel > self.xmax:
 	self.xvel = self.xmax    
 
+    if self.movement[0]: #up
+      if not self.midAir: #on the ground
+	self.yvel = -300
+	self.midAir = True
+
+    if self.midAir: #falling gravity or not
+      self.yvel += self.gravity*dt
+    else:
+      self.yvel = 0
+
     if self.movement[2] == self.movement[3]:
       self.deceleration("x", dt)
 
-    future_rect.x += self.xvel*dt
-    future_rect.y += self.yvel*dt
+    futureRect.x += self.xvel*dt
+    futureRect.y += self.yvel*dt
 
     #self.cubeRect.x -= self.xvel
 
     #bound check
-    if future_rect.right > screen_rect.right + 100:
+    if futureRect.right > screen_rect.right + 100:
       self.movement[3] = False
       self.movement[2] = True
-    if future_rect.left < screen_rect.left - 100:
+    if futureRect.left < screen_rect.left - 100:
       self.movement[3] = True
       self.movement[2] = False
-    if future_rect.top < 0:
-      future_rect.top = 0
-    if future_rect.bottom > screen_rect.bottom:
-      future_rect.bottom = screen_rect.bottom
+    if futureRect.top < 0:
+      futureRect.top = 0
+    if futureRect.bottom >= screen_rect.bottom:
+      futureRect.bottom = screen_rect.bottom
+ 
 
-    self.rect = future_rect
+    #foot bounds
+    tempMidAir = True
+    for plat in platforms:
+      if self.footBoxRect.colliderect(plat.rect): #feet are colliding with a platform
+	print "colliding with ground"
+	if self.midAir == True: #just landing
+	  if self.footBoxRect.centery > plat.rect.top: #hit box is colliding and feet are down below plat
+	    tempMidAir = False
+	    futureRect.bottom = plat.rect.top
+	if self.midAir == False:
+	  tempMidAir = False
+    
+    if self.footBoxRect.centery >= screen_rect.bottom: #stop knights from falling through the bottom of the screen
+      tempMidAir = False
+    
+    self.midAir = tempMidAir
 
+    #update location
+    self.rect = futureRect
+    
     #sprite changing
     if self.movement == [False, False, False, False]:
       self.frame = 0
@@ -127,10 +166,12 @@ class Knight(object):
 	if self.xvel < 0:
 	  self.xvel = 0
 
-  def draw(self,screen,offset):
-    screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80)) 
+  def draw(self,screen):
+     
     #screen.blit(self.magicCubeImage, self.cubeRect)
-    self.text = self.Dfont.render(str(self.xvel), 0, pygame.Color("red"), pygame.Color("black"))
+    screen.blit(self.footBoxImg, self.footBoxRect)
+    self.text = self.Dfont.render(str(self.yvel), 0, pygame.Color("red"), pygame.Color("black"))
     screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-50, 10,10))
-    self.text = self.Dfont.render(str(self.rect.x), 0, pygame.Color("red"), pygame.Color("black"))
+    self.text = self.Dfont.render(str(self.midAir), 0, pygame.Color("red"), pygame.Color("black"))
     screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-100, 10,10))
+    screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80))
