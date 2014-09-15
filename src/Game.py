@@ -113,19 +113,6 @@ class Game(object):
 					self.player.movement[3] = False
 
 	def checkCollisions(self, entity):
-		for platform in self.platform_boundaries_list:
-			if entity.platform_rect.colliderect(platform) and self.player.jumping:
-				if entity.platform_rect.bottom > platform.rect.top and self.player.yvel>0:
-					if  entity.platform_rect.left < platform.rect.right and entity.platform_rect.right > platform.rect.left:
-						self.player.jumping = False
-						entity.platform_rect.bottom = platform.rect.top
-						platform.onPlatform = True
-			if (entity.platform_rect.left > platform.rect.right or entity.platform_rect.right < platform.rect.left) and platform.onPlatform:
-				self.player.jumping=True
-				platform.onPlatform = False
-				
-			if platform.onPlatform:
-				entity.onPlatform = True
 				
 		for ladder in self.ladderList:
 			if entity.rect.colliderect(ladder.rect):
