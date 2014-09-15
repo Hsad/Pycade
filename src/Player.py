@@ -54,6 +54,7 @@ class Player(object):
 		self.onLadder= False
 		self.onPlatform = True #We start her on a platform, so this has to start true if we want her to be able to fall off
 		self.currentPlatform = None
+		self.currentLadder = None
 
 		#acceleration and deceleration
 
@@ -81,14 +82,14 @@ class Player(object):
 		if self.movement[1]:
 			self.future_rect.y += self.yvel*dt"""
 
-		if self.movement[1]:
+		if self.movement[1] and not self.onLadder:
 			self.ducking = True
 			self.duck_rect.left = self.rect.left
 			self.duck_rect.bottom = self.rect.bottom
 			self.xvel = 0
 			self.state = 4
 			self.framelength = 1
-
+	
 		else:
 			self.ducking=False
 			self.duck_rect.left = self.rect.left

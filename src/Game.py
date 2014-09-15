@@ -18,7 +18,7 @@ class Game(object):
 		self.timer = pygame.time.get_ticks()
 		self.dt = 0
 		pygame.display.set_caption("A Team Won Game ")
-		self.backgroundImage = pygame.image.load("../assets/Art/TestBack.tif").convert_alpha()
+		self.backgroundImage = pygame.image.load("../assets/Art/background.png").convert_alpha()
 		self.backgroundRect = self.backgroundImage.get_rect()
 		self.dirt_image = pygame.image.load("../assets/Art/Ground_Placeholder.png").convert_alpha()
 
@@ -113,58 +113,54 @@ class Game(object):
 					self.player.movement[3] = False
 
 	def checkCollisions(self, entity):
-		for platform in self.platform_boundaries_list:
-			if entity.platform_rect.colliderect(platform) and self.player.jumping:
-				if entity.platform_rect.bottom > platform.rect.top and self.player.yvel>0:
-					if  entity.platform_rect.left < platform.rect.right and entity.platform_rect.right > platform.rect.left:
-						self.player.jumping = False
-						entity.platform_rect.bottom = platform.rect.top
-						platform.onPlatform = True
-			if (entity.platform_rect.left > platform.rect.right or entity.platform_rect.right < platform.rect.left) and platform.onPlatform:
-				self.player.jumping=True
-				platform.onPlatform = False
-				
-			if platform.onPlatform:
-				entity.onPlatform = True
-				
-		for ladder in self.ladderList:
-			if entity.rect.colliderect(ladder.rect):
-				if entity.rect.centerx > ladder.rect.left and entity.rect.centerx < ladder.rect.right:
-					ladder.onLadder = True
-					if entity.movement[0]and ladder.onLadder:
-						entity.rect.centerx = ladder.rect.centerx
-						entity.jumping = False
-						entity.rect.y -= 10 *self.dt
-						if entity.rect.bottom< ladder.rect.top:
-							entity.rect.bottom = ladder.rect.top
-					if entity.movement[1]and ladder.onLadder:
-						entity.rect.centerx = ladder.rect.centerx
-						entity.jumping = False
-						entity.ducking = False
-						entity.rect.y += 10 * self.dt
-						
+<<<<<<< HEAD
 
-			if (entity.rect.left > ladder.rect.right or entity.rect.right < ladder.rect.left) and ladder.onLadder :
+		if entity == self.player:
+			
+		
+			for ladder in self.ladderList:
+				if entity.rect.colliderect(ladder.rect):
+					entity.currentLadder = ladder
+					if entity.rect.centerx > entity.currentLadder.rect.left and entity.rect.centerx < entity.currentLadder.rect.right:
+						entity.onLadder = True
+						if entity.movement[0]and entity.onLadder:
+							entity.rect.centerx = entity.currentLadder.rect.centerx
+							entity.jumping = False
+							entity.rect.y -= 10 *self.dt
+							if entity.rect.bottom< entity.currentLadder.rect.top:
+								entity.rect.bottom = entity.currentLadder.rect.top
+						if entity.movement[1]and entity.onLadder:
+						#entity.rect.bottom = entity.currentLadder.rect.bottom
+							pass
 
-				entity.jumping=True
-		 		ladder.onLadder = False
+					#	entity.rect.centerx = entity.currentLadder.rect.centerx
+					#	entity.jumping = False
+					#	entity.ducking = False
+					#	entity.yvel += 10 * self.dt
 
-		for platform in self.platform_boundaries_list:			
-			if entity.future_rect.colliderect(platform) and entity.jumping: 
-				entity.currentPlatform = platform;
-				if entity.future_rect.bottom > entity.currentPlatform.rect.top and self.player.yvel>0:
-					if  entity.future_rect.left < entity.currentPlatform.rect.right and entity.future_rect.right > entity.currentPlatform.rect.left and entity.future_rect.bottom > entity.currentPlatform.rect.top and entity.future_rect.top < entity.currentPlatform.rect.bottom and entity.platform_rect.top < entity.currentPlatform.rect.top: 
-						entity.jumping = False
-						entity.future_rect.bottom = entity.currentPlatform.rect.top
-						entity.onPlatform = True
-						break;
-					if (entity.future_rect.left > entity.currentPlatform.rect.right or entity.future_rect.right < entity.currentPlatform.rect.left):
-						entity.onPlatform = False
-			if entity.currentPlatform and (entity.future_rect.left > entity.currentPlatform.rect.right or entity.future_rect.right < entity.currentPlatform.rect.left or entity.future_rect.top > entity.currentPlatform.rect.bottom or entity.future_rect.bottom < entity.currentPlatform.rect.top) and entity.onPlatform:
-				entity.jumping=True
-				entity.currentPlatform = None
-				#entity.onPlatform = False
-				
+
+				if entity.currentLadder and (entity.rect.left > entity.currentLadder.rect.right or entity.rect.right < entity.currentLadder.rect.left) and entity.onLadder :
+
+					entity.jumping=True
+		 			entity.onLadder = False
+		 			entity.currentLadder = None
+
+			for platform in self.platform_boundaries_list:			
+				if entity.future_rect.colliderect(platform) and entity.jumping: 
+					entity.currentPlatform = platform;
+					if entity.future_rect.bottom > entity.currentPlatform.rect.top and self.player.yvel>0:
+						if  entity.future_rect.left < entity.currentPlatform.rect.right and entity.future_rect.right > entity.currentPlatform.rect.left and entity.future_rect.bottom > entity.currentPlatform.rect.top and entity.future_rect.top < entity.currentPlatform.rect.bottom and entity.platform_rect.top < entity.currentPlatform.rect.top: 
+							entity.jumping = False
+							entity.future_rect.bottom = entity.currentPlatform.rect.top
+							entity.onPlatform = True
+							break;
+						if (entity.future_rect.left > entity.currentPlatform.rect.right or entity.future_rect.right < entity.currentPlatform.rect.left):
+							entity.onPlatform = False
+				if entity.currentPlatform and (entity.future_rect.left > entity.currentPlatform.rect.right or entity.future_rect.right < entity.currentPlatform.rect.left or entity.future_rect.top > entity.currentPlatform.rect.bottom or entity.future_rect.bottom < entity.currentPlatform.rect.top) and entity.onPlatform:
+					entity.jumping=True
+					entity.currentPlatform = None
+					#entity.onPlatform = False
+	
 
 
 
