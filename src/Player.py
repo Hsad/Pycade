@@ -13,6 +13,7 @@ class Player(object):
 			2 = skidding
 			3 = jumping
 			4 = ducking
+			5 = climbing
 		"""
 		self.state = 0
 
@@ -78,17 +79,18 @@ class Player(object):
 		self.platform_rect.left = self.rect.left
 
 		"""if self.movement[0]:
-			self.future_rect.y -= self.yvel*dt
-		if self.movement[1]:
-			self.future_rect.y += self.yvel*dt"""
+			self.future_rect.y -= self.yvel*dt"""
 
-		if self.movement[1] and not self.onLadder:
-			self.ducking = True
-			self.duck_rect.left = self.rect.left
-			self.duck_rect.bottom = self.rect.bottom
-			self.xvel = 0
-			self.state = 4
-			self.framelength = 1
+		if self.movement[1]:
+			if not self.onLadder:
+				self.ducking = True
+				self.duck_rect.left = self.rect.left
+				self.duck_rect.bottom = self.rect.bottom
+				self.xvel = 0
+				self.state = 4
+				self.framelength = 1
+			else:
+				self.rect.x += 10 * dt
 	
 		else:
 			self.ducking=False
@@ -142,6 +144,10 @@ class Player(object):
 			self.framelength = 1
 		else:
 			self.yvel = 0
+
+		if self.onLadder:
+			self.state = 5
+			self.framelength = 2
 
 		self.future_rect.x += self.xvel*dt
 		self.future_rect.y += self.yvel*dt
@@ -199,6 +205,8 @@ class Player(object):
 
 
 	def draw(self,screen):
+		if self.onLadder:
+			screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), (2*self.state) * 80 , 64, 80))
 		if self.jumping:
 			if self.yvel < 0:
 				screen.blit(self.image, self.rect, pygame.Rect(0, (2*self.state + self.direction) * 80 , 64, 80)) 
