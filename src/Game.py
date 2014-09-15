@@ -113,6 +113,7 @@ class Game(object):
 					self.player.movement[3] = False
 
 	def checkCollisions(self, entity):
+<<<<<<< HEAD
 
 		if entity == self.player:
 			
@@ -136,7 +137,7 @@ class Game(object):
 					#	entity.jumping = False
 					#	entity.ducking = False
 					#	entity.yvel += 10 * self.dt
-						
+
 
 				if entity.currentLadder and (entity.rect.left > entity.currentLadder.rect.right or entity.rect.right < entity.currentLadder.rect.left) and entity.onLadder :
 
