@@ -18,7 +18,7 @@ class Game(object):
 		self.timer = pygame.time.get_ticks()
 		self.dt = 0
 		pygame.display.set_caption("A Team Won Game ")
-		self.backgroundImage = pygame.image.load("../assets/Art/BackgroundPlaceholder.jpg").convert_alpha()
+		self.backgroundImage = pygame.image.load("../assets/Art/TestBack.tif").convert_alpha()
 		self.backgroundRect = self.backgroundImage.get_rect()
 
 
@@ -54,15 +54,15 @@ class Game(object):
 						self.platform_boundaries_list[-1].rect.width += 40
 					else:
 
-						self.platform_boundaries_list.append(Platform.Platform("../assets/art/platformPlaceholder.png",self.platformx,self.platformy))
-					self.platform_draw_list.append(Platform.Platform("../assets/art/platformPlaceholder.png",self.platformx,self.platformy))
+						self.platform_boundaries_list.append(Platform.Platform("../assets/art/platform_middle_col.png",self.platformx,self.platformy))
+					self.platform_draw_list.append(Platform.Platform("../assets/art/platform_middle_col.png",self.platformx,self.platformy))
 					self.previous_tile_is_platform = True
 				elif self.symbol == "L":
 					if self.previous_tile_is_platform:
 
 
 						self.platform_boundaries_list[-1].rect.width += 40
-					self.ladderList.append(Ladder.Ladder("../assets/art/Ladder Placeholder.png", self.platformx, self.platformy))
+					self.ladderList.append(Ladder.Ladder("../assets/art/ladder_col.png", self.platformx, self.platformy))
 				else:
 					self.previous_tile_is_platform = False
 				if self.symbol == "S":
