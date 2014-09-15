@@ -168,9 +168,9 @@ class Knight(object):
   def draw(self,screen):
     #screen.blit(self.magicCubeImage, self.cubeRect)
     screen.blit(self.footBoxImg, self.footBoxRect)
-    self.text = self.Dfont.render(str(self.yvel), 0, pygame.Color("red"), pygame.Color("black"))
-    screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-50, 10,10))
-    self.text = self.Dfont.render(str(self.midAir), 0, pygame.Color("red"), pygame.Color("black"))
-    screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-100, 10,10))
+    #self.text = self.Dfont.render(str(self.yvel), 0, pygame.Color("red"), pygame.Color("black"))
+    #screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-50, 10,10))
+    #self.text = self.Dfont.render(str(self.midAir), 0, pygame.Color("red"), pygame.Color("black"))
+    #screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-100, 10,10))
     screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80))
 

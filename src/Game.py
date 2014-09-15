@@ -114,8 +114,6 @@ class Game(object):
 
 	def checkCollisions(self, entity):
 		if entity == self.player:
-			
-		
 			for ladder in self.ladderList:
 				if entity.rect.colliderect(ladder.rect):
 					entity.currentLadder = ladder
