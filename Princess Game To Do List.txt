@@ -1,0 +1,49 @@
+- Come up with a name (All)
+
+
+Intro/Ending
+- Make opening cutscene										Thomas
+- Make main menu										<Vacant>
+- Make ending cutscene										Thomas
+
+
+
+
+
+
+
+Level
+- Design the level and implement it in the text file						<Vacant>
+- Make princess slide down banner in beginning of level						<Vacant>
+- Fix player spawning point									Thomas
+- Implement randomized dirt tiles								Thomas
+- Implement Music and Sound Effects								Thomas
+- Finish Sound Effects										Thomas
+- Add castle entrence										<Vacant>
+- Change platform tiles to castle images on the other side of the castle entrence		<Vacant>
+- Add prince's cell to end of level								<Vacant>
+- Make it so when the camera hits the right end of the level, it initiates the end cutscene	<Vacant>
+
+
+
+
+
+
+
+Platforming
+- Be able to climb back down ladders								<Vacant>
+- Jump down to a lower platform when you hold down and jump					<Vacant>
+
+
+
+
+
+
+
+
+Knights
+- Make knights only chase you if you are within a certain boundary				<Vacant>
+- Make friendly knights carry you back when they run into you					<Vacant>
+- Make enemy knights stab you when you when they walk up to you					<Vacant>
+- Make stabbing attack miss if you are ducking							<Vacant>
+- When you get stabbed by an enemy knight.....what happens?					<Vacant>
