@@ -24,8 +24,11 @@ class Player(object):
 		#rects
 		self.duck_rect = self.duck_image.get_rect()
 		self.rect = pygame.Rect(0,0,64,80)
+		self.platform_rect = pygame.Rect(0,0,44,15)
 
-		self.future_rect =self.rect
+		self.future_rect = self.rect
+		self.future_rect.width = 45 #Feels better if we don't check all the way to the end for collisions
+		self.future_rect.x += 10
 
 		self.movement_amount = 0
 		self.camerax = 0
@@ -43,13 +46,13 @@ class Player(object):
 		self.start_jump = False
 
 		#they are in the air
-		self.jumping = False
+		self.jumping = True
 
 		#direction of player, facing right
 		#some player states
 		self.ducking = False
 		self.onLadder= False
-		self.onPlatform = False
+		self.onPlatform = True #We start her on a platform, so this has to start true if we want her to be able to fall off
 		self.currentPlatform = None
 
 		#acceleration and deceleration
@@ -69,7 +72,9 @@ class Player(object):
 		self.framelength = 4
 
 	def update(self, dt, screen_rect):
-		self.future_rect = self.rect.move(0,0)	
+		self.future_rect = self.rect.move(0,0)
+		self.platform_rect.bottom = self.rect.bottom
+		self.platform_rect.left = self.rect.left
 
 		"""if self.movement[0]:
 			self.future_rect.y -= self.yvel*dt
@@ -150,16 +155,12 @@ class Player(object):
 		if self.future_rect.left < 0:
 			self.future_rect.left = 0
 			self.xvel = 0
-		if self.future_rect.top < 0:
-			self.future_rect.top = 0
 		if self.future_rect.bottom > screen_rect.bottom:
 			self.future_rect.bottom = screen_rect.bottom
 			self.jumping = False
 
 		#Make the player "move" based on their inputs
 		self.movement_amount = self.future_rect.x - self.rect.x
-		print str(self.camerax)
-		print str(self.movement_amount)
 		if self.camerax + self.movement_amount >= 0 and self.camerax + self.movement_amount <= self.maxx:
 			if self.direction == 1: #If we're moving left, the player stops 100 pixels to the left of the middle of the screen
 				if self.rect.x >= self.screen.get_rect().width/2-100:
@@ -203,4 +204,4 @@ class Player(object):
 			if self.yvel > 0:
 				screen.blit(self.image, self.rect, pygame.Rect(64, (2*self.state + self.direction) * 80 , 64, 80)) 
 		else:
-			screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), (2*self.state + self.direction) * 80 , 64, 80)) 
+			screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), (2*self.state + self.direction) * 80 , 64, 80))

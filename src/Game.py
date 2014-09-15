@@ -20,6 +20,7 @@ class Game(object):
 		pygame.display.set_caption("A Team Won Game ")
 		self.backgroundImage = pygame.image.load("../assets/Art/TestBack.tif").convert_alpha()
 		self.backgroundRect = self.backgroundImage.get_rect()
+		self.dirt_image = pygame.image.load("../assets/Art/Ground_Placeholder.png").convert_alpha()
 
 
 		"""apply the offset for x y"""
@@ -49,14 +50,14 @@ class Game(object):
 			for self.symbol in self.platform_file_line:
 				if self.symbol == "P":
 					if self.previous_tile_is_platform:
-
-
 						self.platform_boundaries_list[-1].rect.width += 40
+						self.platform_draw_list.append(Platform.Platform("../assets/art/platform_middle_col.png",self.platformx,self.platformy))
 					else:
-
-						self.platform_boundaries_list.append(Platform.Platform("../assets/art/platform_middle_col.png",self.platformx,self.platformy))
-					self.platform_draw_list.append(Platform.Platform("../assets/art/platform_middle_col.png",self.platformx,self.platformy))
-					self.previous_tile_is_platform = True
+						self.platform_boundaries_list.append(Platform.Platform("../assets/art/platform_begin_col.png",self.platformx,self.platformy))
+						self.platform_boundaries_list[-1].rect.height = 15
+						self.platform_boundaries_list[-1].rect.top = self.platformy
+						self.platform_draw_list.append(Platform.Platform("../assets/art/platform_begin_col.png",self.platformx,self.platformy))
+						self.previous_tile_is_platform = True
 				elif self.symbol == "L":
 					if self.previous_tile_is_platform:
 
@@ -64,6 +65,8 @@ class Game(object):
 						self.platform_boundaries_list[-1].rect.width += 40
 					self.ladderList.append(Ladder.Ladder("../assets/art/ladder_col.png", self.platformx, self.platformy))
 				else:
+					if self.previous_tile_is_platform and len(self.platform_draw_list) > 0:
+						self.platform_draw_list[-1].image = pygame.image.load("../assets/art/platform_end_col.png").convert_alpha()
 					self.previous_tile_is_platform = False
 				if self.symbol == "S":
 					self.player.rect.x = self.platformx
@@ -111,13 +114,13 @@ class Game(object):
 
 	def checkCollisions(self, entity):
 		for platform in self.platform_boundaries_list:
-			if entity.rect.colliderect(platform) and self.player.jumping:
-				if entity.rect.bottom > platform.rect.top and self.player.yvel>0:
-					if  entity.rect.left < platform.rect.right and entity.rect.right > platform.rect.left:
+			if entity.platform_rect.colliderect(platform) and self.player.jumping:
+				if entity.platform_rect.bottom > platform.rect.top and self.player.yvel>0:
+					if  entity.platform_rect.left < platform.rect.right and entity.platform_rect.right > platform.rect.left:
 						self.player.jumping = False
-						entity.rect.bottom = platform.rect.top
+						entity.platform_rect.bottom = platform.rect.top
 						platform.onPlatform = True
-			if (entity.rect.left > platform.rect.right or entity.rect.right < platform.rect.left) and platform.onPlatform :
+			if (entity.platform_rect.left > platform.rect.right or entity.platform_rect.right < platform.rect.left) and platform.onPlatform:
 				self.player.jumping=True
 				platform.onPlatform = False
 				
@@ -146,23 +149,22 @@ class Game(object):
 				entity.jumping=True
 		 		ladder.onLadder = False
 
-		for platform in self.platform_boundaries_list:				
+		for platform in self.platform_boundaries_list:			
 			if entity.future_rect.colliderect(platform) and entity.jumping: 
 				entity.currentPlatform = platform;
 				if entity.future_rect.bottom > entity.currentPlatform.rect.top and self.player.yvel>0:
-					if  entity.future_rect.left < entity.currentPlatform.rect.right and entity.future_rect.right > entity.currentPlatform.rect.left:# and (entity.rect.bottom > entity.currentPlatform.rect.top): 
+					if  entity.future_rect.left < entity.currentPlatform.rect.right and entity.future_rect.right > entity.currentPlatform.rect.left and entity.future_rect.bottom > entity.currentPlatform.rect.top and entity.future_rect.top < entity.currentPlatform.rect.bottom and entity.platform_rect.top < entity.currentPlatform.rect.top: 
 						entity.jumping = False
 						entity.future_rect.bottom = entity.currentPlatform.rect.top
 						entity.onPlatform = True
 						break;
 					if (entity.future_rect.left > entity.currentPlatform.rect.right or entity.future_rect.right < entity.currentPlatform.rect.left):
 						entity.onPlatform = False
-			if entity.currentPlatform and (entity.future_rect.left > entity.currentPlatform.rect.right or entity.future_rect.right < entity.currentPlatform.rect.left) and entity.onPlatform:
+			if entity.currentPlatform and (entity.future_rect.left > entity.currentPlatform.rect.right or entity.future_rect.right < entity.currentPlatform.rect.left or entity.future_rect.top > entity.currentPlatform.rect.bottom or entity.future_rect.bottom < entity.currentPlatform.rect.top) and entity.onPlatform:
 				entity.jumping=True
 				entity.currentPlatform = None
 				#entity.onPlatform = False
-
-
+				
 
 
 
@@ -203,6 +205,10 @@ class Game(object):
 		for ladder in self.ladderList:
 			ladder.draw(self.screen)
 		for platform in self.platform_draw_list:
+			dirty = platform.rect.y + 20
+			while dirty <= self.screen.get_rect().width:
+				self.screen.blit (self.dirt_image, pygame.Rect(platform.rect.x, dirty, 40, 40))
+				dirty += 40
 			platform.draw(self.screen)
 		self.player.draw(self.screen)
 		#knights
