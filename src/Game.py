@@ -125,9 +125,6 @@ class Game(object):
 							entity.rect.y -= 10 *self.dt
 							if entity.rect.bottom< entity.currentLadder.rect.top:
 								entity.rect.bottom = entity.currentLadder.rect.top
-						if entity.movement[1]and entity.onLadder:
-						#entity.rect.bottom = entity.currentLadder.rect.bottom
-							pass
 
 					#	entity.rect.centerx = entity.currentLadder.rect.centerx
 					#	entity.jumping = False
@@ -142,17 +139,17 @@ class Game(object):
 		 			entity.currentLadder = None
 
 			for platform in self.platform_boundaries_list:			
-				if entity.future_rect.colliderect(platform) and entity.jumping: 
+				if entity.rect.colliderect(platform) and entity.jumping: 
 					entity.currentPlatform = platform;
-					if entity.future_rect.bottom > entity.currentPlatform.rect.top and self.player.yvel>0:
-						if  entity.future_rect.left < entity.currentPlatform.rect.right and entity.future_rect.right > entity.currentPlatform.rect.left and entity.future_rect.bottom > entity.currentPlatform.rect.top and entity.future_rect.top < entity.currentPlatform.rect.bottom and entity.platform_rect.top < entity.currentPlatform.rect.top: 
+					if entity.rect.bottom > entity.currentPlatform.rect.top and self.player.yvel>0:
+						if  entity.rect.left < entity.currentPlatform.rect.right and entity.rect.right > entity.currentPlatform.rect.left and entity.rect.bottom > entity.currentPlatform.rect.top and entity.rect.top < entity.currentPlatform.rect.bottom and entity.platform_rect.top < entity.currentPlatform.rect.top: 
 							entity.jumping = False
-							entity.future_rect.bottom = entity.currentPlatform.rect.top
+							entity.rect.bottom = entity.currentPlatform.rect.top
 							entity.onPlatform = True
 							break;
-						if (entity.future_rect.left > entity.currentPlatform.rect.right or entity.future_rect.right < entity.currentPlatform.rect.left):
+						if (entity.rect.left > entity.currentPlatform.rect.right or entity.rect.right < entity.currentPlatform.rect.left):
 							entity.onPlatform = False
-				if entity.currentPlatform and (entity.future_rect.left > entity.currentPlatform.rect.right or entity.future_rect.right < entity.currentPlatform.rect.left or entity.future_rect.top > entity.currentPlatform.rect.bottom or entity.future_rect.bottom < entity.currentPlatform.rect.top) and entity.onPlatform:
+				if entity.currentPlatform and (entity.rect.left > entity.currentPlatform.rect.right or entity.rect.right < entity.currentPlatform.rect.left or entity.rect.top > entity.currentPlatform.rect.bottom or entity.rect.bottom < entity.currentPlatform.rect.top) and entity.onPlatform:
 					entity.jumping=True
 					entity.currentPlatform = None
 					#entity.onPlatform = False
