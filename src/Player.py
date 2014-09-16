@@ -184,8 +184,8 @@ class Player(object):
 
 
 		#sprite changing
-		self.framebuffer += dt
-		if (self.onLadder and self.movement[0]):
+		if not (self.onLadder and not self.movement[0]):
+			self.framebuffer += dt
 			if self.framebuffer > .5/self.framerate:
 				self.framebuffer = 0
 				self.frame += 1
