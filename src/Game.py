@@ -201,9 +201,11 @@ class Game(object):
 
 
 	def update(self):
+		self.checkCollisions(self.player)
+
 		self.player.update(self.dt, self.screen_rect)		
 		#Moves the tiles to give the illusion of player movement
-		if self.player.camerax + self.player.movement_amount >= 0 and self.player.camerax <= self.player.maxx:
+		if self.player.camerax + self.player.movement_amount >= 0 and self.player.camerax <= self.player.maxx and  not self.player.onLadder:
 			self.player.camerax += self.player.movement_amount
 			for ladder in self.ladderList:
 				ladder.rect.x -= self.player.movement_amount
