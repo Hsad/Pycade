@@ -154,7 +154,7 @@ class Game(object):
 
 			for ladder in self.ladderList:
 				if entity.rect.colliderect(ladder.rect):
-					print  str(entity.onLadder) + " " +  str(entity.movement[1])
+				  #print  str(entity.onLadder) + " " +  str(entity.movement[1])
 
 					entity.currentLadder = ladder
 					if entity.rect.centerx > entity.currentLadder.rect.left and entity.rect.centerx < entity.currentLadder.rect.right and entity.movement[0]:
