@@ -1,4 +1,4 @@
-import pygame, sys, Player, Platform, Knight, Ladder
+import pygame, random, sys, Player, Platform, Knight, Ladder
 
 class Game(object):
 	def __init__(self):
@@ -17,7 +17,11 @@ class Game(object):
 		pygame.display.set_caption("Royal Rescue")
 		self.backgroundImage = pygame.image.load("../assets/Art/background.png").convert_alpha()
 		self.backgroundRect = self.backgroundImage.get_rect()
-		self.dirt_image = pygame.image.load("../assets/Art/Ground_Placeholder.png").convert_alpha()
+		self.dirt_image1 = pygame.image.load("../assets/Art/dirt1.png").convert_alpha()
+		self.dirt_image2 = pygame.image.load("../assets/Art/dirt2.png").convert_alpha()
+		self.dirt_image3 = pygame.image.load("../assets/Art/dirt3.png").convert_alpha()
+		self.dirt_image4 = pygame.image.load("../assets/Art/dirt4.png").convert_alpha()
+		self.dirt_type_list = []
 
 		#Generate a list of rects from a text file named Platform.txt
 		#Type - where there isn't a platform
@@ -28,6 +32,7 @@ class Game(object):
 		self.platformx = 0
 		self.platformy = 0
 		self.previous_tile_is_platform = False
+		self.previous_platform = ""
 		
 		#Parse the text file
 		for self.line in self.platform_file:
@@ -39,13 +44,34 @@ class Game(object):
 				if self.symbol == "P":
 					if self.previous_tile_is_platform:
 						self.platform_boundaries_list[-1].rect.width += 40
+						self.platform_draw_list.append(Platform.Platform("../assets/art/platform_middle.png",self.platformx,self.platformy))
+						for i in range(self.screen.get_rect().height/40):
+							self.dirt_type_list.append(random.randint(1, 4))
+					else:
+						self.platform_boundaries_list.append(Platform.Platform("../assets/art/platform_begin.png",self.platformx,self.platformy))
+						self.platform_boundaries_list[-1].rect.height = 15
+						self.platform_boundaries_list[-1].rect.top = self.platformy
+						self.platform_draw_list.append(Platform.Platform("../assets/art/platform_begin.png",self.platformx,self.platformy))
+						for i in range(self.screen.get_rect().height/40):
+							self.dirt_type_list.append(random.randint(1, 4))
+						self.previous_tile_is_platform = True
+						self.previous_platform = "Grass"
+						
+				elif self.symbol == "C":
+					if self.previous_tile_is_platform:
+						self.platform_boundaries_list[-1].rect.width += 40
 						self.platform_draw_list.append(Platform.Platform("../assets/art/platform_middle_col.png",self.platformx,self.platformy))
+						for i in range(self.screen.get_rect().height/40):
+							self.dirt_type_list.append(random.randint(1, 4))
 					else:
 						self.platform_boundaries_list.append(Platform.Platform("../assets/art/platform_begin_col.png",self.platformx,self.platformy))
 						self.platform_boundaries_list[-1].rect.height = 15
 						self.platform_boundaries_list[-1].rect.top = self.platformy
 						self.platform_draw_list.append(Platform.Platform("../assets/art/platform_begin_col.png",self.platformx,self.platformy))
+						for i in range(self.screen.get_rect().height/40):
+							self.dirt_type_list.append(random.randint(1, 4))
 						self.previous_tile_is_platform = True
+						self.previous_platform = "Castle"
 				elif self.symbol == "L":
 					if self.previous_tile_is_platform:
 
@@ -53,8 +79,19 @@ class Game(object):
 						self.platform_boundaries_list[-1].rect.width += 40
 					self.ladderList.append(Ladder.Ladder("../assets/art/ladder_col.png", self.platformx, self.platformy))
 				else:
-					if self.previous_tile_is_platform and len(self.platform_draw_list) > 0:
-						self.platform_draw_list[-1].image = pygame.image.load("../assets/art/platform_end_col.png").convert_alpha()
+					#When we end a platform block, if it was more than one tile wide, make the last tile the end sprite.
+					#If the platform block was only one tile wide, make it the middle platform
+					if self.previous_tile_is_platform and len(self.platform_draw_list) > 1:
+						if self.platform_draw_list[-2].rect.x == self.platform_draw_list[-1].rect.x-40 and self.platform_draw_list[-2].rect.y == self.platform_draw_list[-1].rect.y:
+							if self.previous_platform == "Castle":
+								self.platform_draw_list[-1].image = pygame.image.load("../assets/Art/platform_end_col.png").convert_alpha()
+							if self.previous_platform == "Grass":
+								self.platform_draw_list[-1].image = pygame.image.load("../assets/art/platform_end.png").convert_alpha()
+						else:
+							if self.previous_platform == "Castle":
+								self.platform_draw_list[-1].image = pygame.image.load("../assets/Art/platform_middle_col.png").convert_alpha()
+							if self.previous_platform == "Grass":
+								self.platform_draw_list[-1].image = pygame.image.load("../assets/art/platform_middle.png").convert_alpha()
 					self.previous_tile_is_platform = False
 				if self.symbol == "S":
 					self.player.rect.x = self.platformx
@@ -181,11 +218,20 @@ class Game(object):
 		#pygame.draw.line(self.screen,(0,0,0),(0,0),(300,300))
 		for ladder in self.ladderList:
 			ladder.draw(self.screen)
+		self.counter = 0
 		for platform in self.platform_draw_list:
 			dirty = platform.rect.y + 20
 			while dirty <= self.screen.get_rect().width:
-				self.screen.blit (self.dirt_image, pygame.Rect(platform.rect.x, dirty, 40, 40))
+				if self.dirt_type_list[self.counter] == 1:
+					self.screen.blit (self.dirt_image1, pygame.Rect(platform.rect.x, dirty, 40, 40))
+				if self.dirt_type_list[self.counter] == 2:
+					self.screen.blit (self.dirt_image2, pygame.Rect(platform.rect.x, dirty, 40, 40))
+				if self.dirt_type_list[self.counter] == 3:
+					self.screen.blit (self.dirt_image3, pygame.Rect(platform.rect.x, dirty, 40, 40))
+				if self.dirt_type_list[self.counter] == 4:
+					self.screen.blit (self.dirt_image4, pygame.Rect(platform.rect.x, dirty, 40, 40))
 				dirty += 40
+				self.counter += 1
 			platform.draw(self.screen)
 		self.player.draw(self.screen)
 		#knights

@@ -1,4 +1,4 @@
-import pygame, random
+import pygame, random, math
 
 class Knight(object):
   def __init__(self, screen, xStart, yStart):
@@ -9,7 +9,7 @@ class Knight(object):
 
     self.direction = 0 #0 left, 1 right
     self.xpos = xStart	
-    self.ypos = yStart + screen.get_rect().height
+    self.ypos = yStart #+ screen.get_rect().height
     self.midAir = False # weather or not player is in air, to set gravity of not
 
     self.enemy = False
@@ -31,7 +31,7 @@ class Knight(object):
     self.footBoxRect.centerx = self.rect.x
     self.footBoxRect.centery = self.rect.bottom
 
-    self.movement = [False, False, False, True] #up down left right
+    self.movement = [False, False, False, False] #up down left right
     self.xvel = 0
     self.yvel = 0
 
@@ -45,29 +45,40 @@ class Knight(object):
     #max horizontal speed
     self.xmax = 200 + random.randint(-20,20)
 
+    #max line of sight
+    self.MAXSIGHT = 500
+    self.chasing = False
     #values for sprite changes
     self.frame = 0
     self.framerate = 2
     self.framebuffer = 0
 
   def update(self, dt, screen_rect, player, knightList, platforms, ladders):
-    #if player is to the left or right of the knight
-    if player.rect.x > self.rect.x:
+    if (self.playerNear(player) < 300 and not self.chasing) or (self.chasing and self.playerNear(player) < 500):
+      #if player is to the left or right of the knight
+      self.chasing = True
+      if player.rect.x > self.rect.x:
+	self.movement[2]=False
+	self.movement[3]=True
+      else:
+	self.movement[2]=True
+	self.movement[3]=False      
+      #if player is above or below knight
+      if player.rect.y > self.rect.y: #player is below knight
+	self.movement[1]=True
+	self.movement[0]=False
+      elif player.rect.y < self.rect.y: #player is above
+	self.movement[0]=True
+	self.movement[1]=False
+      else:
+	self.movement[0]=False
+	self.movement[1]=False
+    else: #if self.playerNear(player) > 200 and self.chasing:
+      self.chasing = False
+      self.movement[0]=False
+      self.movement[1]=False
       self.movement[2]=False
-      self.movement[3]=True
-    else:
-      self.movement[2]=True
-      self.movement[3]=False      
-    #if player is above or below knight
-    if player.rect.y > self.rect.y: #player is below knight
-      self.movement[1]=True
-      self.movement[0]=False
-    elif player.rect.y < self.rect.y: #player is above
-      self.movement[0]=True
-      self.movement[1]=False
-    else:
-      self.movement[0]=False
-      self.movement[1]=False
+      self.movement[3]=False
 
     #set preview hit box
     futureRect = self.rect.move(0,0)
@@ -94,9 +105,12 @@ class Knight(object):
 	self.xvel = self.xmax    
 
     if self.movement[0]: #up
-      if not self.midAir: #on the ground
+      """if not self.midAir: #on the ground
 	self.yvel = -300
-	self.midAir = True
+	self.midAir = True"""
+      #look for a ladder
+      #if found move tward ladder
+      #if on ladder, move up
 
     if self.midAir: #falling gravity or not
       self.yvel += self.gravity*dt
@@ -165,6 +179,15 @@ class Knight(object):
 	if self.xvel < 0:
 	  self.xvel = 0
 
+  def playerNear(self, player):
+    xDist = abs(player.rect.x - self.rect.x)
+    yDist = abs(player.rect.y - self.rect.y)
+    dist = math.sqrt(xDist*xDist + yDist*yDist)
+    if dist < self.MAXSIGHT:
+      return dist
+    else:
+      return dist
+
   def draw(self,screen):
     #screen.blit(self.magicCubeImage, self.cubeRect)
     screen.blit(self.footBoxImg, self.footBoxRect)
@@ -172,5 +195,5 @@ class Knight(object):
     #screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-50, 10,10))
     #self.text = self.Dfont.render(str(self.midAir), 0, pygame.Color("red"), pygame.Color("black"))
     #screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-100, 10,10))
-    screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80))
+    #screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80))
 
