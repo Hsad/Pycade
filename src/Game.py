@@ -109,7 +109,9 @@ class Game(object):
 					self.player.rect.x = self.platformx
 					self.player.rect.y = self.platformy
 				if self.symbol == "K":
-					self.knightList.append(Knight.Knight(self.screen, self.platformx, self.platformy))
+					self.knightList.append(Knight.Knight(self.screen, self.platformx, self.platformy,False))
+				if self.symbol == "E":
+					self.knightList.append(Knight.Knight(self.screen, self.platformx, self.platformy,True))
 				self.platformx += 40
 			self.platformy += 40
 
@@ -174,8 +176,9 @@ class Game(object):
 					#	entity.ducking = False
 					#	entity.yvel += 10 * self.dt
 
-
-				if entity.currentLadder and (entity.rect.left > entity.currentLadder.rect.right or entity.rect.right < entity.currentLadder.rect.left) and entity.onLadder :
+				if entity.currentLadder and (entity.rect.bottom < entity.currentLadder.rect.top):
+					entity.onLadder = False
+				if entity.currentLadder and ((entity.rect.left > entity.currentLadder.rect.right or entity.rect.right < entity.currentLadder.rect.left) ) :
 
 					entity.jumping=True
 		 			entity.onLadder = False

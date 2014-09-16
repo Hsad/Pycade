@@ -1,7 +1,7 @@
 import pygame, random, math
 
 class Knight(object):
-  def __init__(self, screen, xStart, yStart):
+  def __init__(self, screen, xStart, yStart,enemyBool):
 
     pygame.font.init() #debug
     self.Dfont = pygame.font.Font(None, 40) #debug
@@ -12,11 +12,11 @@ class Knight(object):
     self.ypos = yStart #+ screen.get_rect().height
     self.midAir = False # weather or not player is in air, to set gravity of not
 
-    self.enemy = False
+    self.enemy = enemyBool
     if self.enemy == False:
       self.image = pygame.image.load("../assets/Art/knight_walk.png").convert_alpha() #allied 
     else:
-      self.image = pygame.image.load("../assets/Art/knight_walk.png").convert_alpha() #enemy (not implemented)
+      self.image = pygame.image.load("../assets/Art/enemy_knight_walk.png").convert_alpha() #enemy (not implemented)
     #self.magicCubeImage = pygame.image.load("../assets/Art/PlayerDuckingPlaceholder.png") #debug
     #self.cubeRect = pygame.Rect(0,0,64,64) #debug
     #self.cubeRect.x = screen.get_rect().centerx #debug
@@ -195,5 +195,5 @@ class Knight(object):
     #screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-50, 10,10))
     #self.text = self.Dfont.render(str(self.midAir), 0, pygame.Color("red"), pygame.Color("black"))
     #screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-100, 10,10))
-    #screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80))
+    screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80))
 
