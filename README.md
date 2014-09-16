@@ -1,6 +1,4 @@
-Pycade
+Royal Rescue!
 ======
-
-Something something Games
 
 A Team Won Production

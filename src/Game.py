@@ -14,7 +14,7 @@ class Game(object):
 		self.ladderList = []
 		self.timer = pygame.time.get_ticks()
 		self.dt = 0
-		pygame.display.set_caption("A Team Won Game ")
+		pygame.display.set_caption("Royal Rescue")
 		self.backgroundImage = pygame.image.load("../assets/Art/background.png").convert_alpha()
 		self.backgroundRect = self.backgroundImage.get_rect()
 		self.dirt_image = pygame.image.load("../assets/Art/Ground_Placeholder.png").convert_alpha()
@@ -96,17 +96,23 @@ class Game(object):
 
 	def checkCollisions(self, entity):
 		if entity == self.player:
+
 			for ladder in self.ladderList:
 				if entity.rect.colliderect(ladder.rect):
+					print  str(entity.onLadder) + " " +  str(entity.movement[1])
+
 					entity.currentLadder = ladder
-					if entity.rect.centerx > entity.currentLadder.rect.left and entity.rect.centerx < entity.currentLadder.rect.right:
+					if entity.rect.centerx > entity.currentLadder.rect.left and entity.rect.centerx < entity.currentLadder.rect.right and entity.movement[0]:
 						entity.onLadder = True
-						if entity.movement[0]and entity.onLadder:
+
+						if entity.onLadder:
 							entity.rect.centerx = entity.currentLadder.rect.centerx
 							entity.jumping = False
 							entity.rect.y -= 10 *self.dt
 							if entity.rect.bottom< entity.currentLadder.rect.top:
 								entity.rect.bottom = entity.currentLadder.rect.top
+						if entity.onLadder and entity.movement[1]:
+							entity.rect.y += 10 *self.dt
 
 					#	entity.rect.centerx = entity.currentLadder.rect.centerx
 					#	entity.jumping = False
