@@ -9,9 +9,6 @@ class Game(object):
 		self.player = Player.Player(self.screen)
 		#initilizing Knight Array
 		self.knightList = []
-		"""for x in range(5):
-			KN = Knight.Knight(self.screen, x*20, 0)
-			self.knightList.append(KN)"""
 
 		self.clock = pygame.time.Clock()
 		self.ladderList = []
@@ -21,15 +18,6 @@ class Game(object):
 		self.backgroundImage = pygame.image.load("../assets/Art/background.png").convert_alpha()
 		self.backgroundRect = self.backgroundImage.get_rect()
 		self.dirt_image = pygame.image.load("../assets/Art/Ground_Placeholder.png").convert_alpha()
-
-
-		"""apply the offset for x y"""
-		offset = [0,0]
-
-
-		#self.elapsed = 0
-
-
 
 		#Generate a list of rects from a text file named Platform.txt
 		#Type - where there isn't a platform
@@ -95,12 +83,6 @@ class Game(object):
 				if event.key == pygame.K_SPACE:
 					if not (self.player.jumping or self.player.ducking):
 						self.player.start_jump = True
-
-
-				#if both directions are pressed
-				"""if self.player.movement[2] and self.player.movement[3]:
-					self.player.movement[2] = False
-					self.player.movement[3] = False"""
 
 			if event.type == pygame.KEYUP:
 				if event.key == pygame.K_w:
