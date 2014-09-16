@@ -78,9 +78,6 @@ class Player(object):
 		self.platform_rect.bottom = self.rect.bottom
 		self.platform_rect.left = self.rect.left
 
-		"""if self.movement[0]:
-			self.future_rect.y -= self.yvel*dt"""
-
 		if self.movement[1]:
 			if not self.onLadder:
 				self.ducking = True

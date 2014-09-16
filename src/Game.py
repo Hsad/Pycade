@@ -9,9 +9,6 @@ class Game(object):
 		self.player = Player.Player(self.screen)
 		#initilizing Knight Array
 		self.knightList = []
-		"""for x in range(5):
-			KN = Knight.Knight(self.screen, x*20, 0)
-			self.knightList.append(KN)"""
 
 		self.clock = pygame.time.Clock()
 		self.ladderList = []
@@ -48,15 +45,6 @@ class Game(object):
 		self.set_props.append(self.enemy_castle_entrence_rect)
 		self.set_props.append(self.good_castle_entrence_rect)
 		self.castle_background_image = pygame.image.load("../assets/Art/Castle_Background.png").convert_alpha()
-
-
-		"""apply the offset for x y"""
-		offset = [0,0]
-
-
-		#self.elapsed = 0
-
-
 
 		#Generate a list of rects from a text file named Platform.txt
 		#Type - where there isn't a platform
@@ -160,12 +148,6 @@ class Game(object):
 					if not (self.player.jumping or self.player.ducking):
 						self.player.start_jump = True
 
-
-				#if both directions are pressed
-				"""if self.player.movement[2] and self.player.movement[3]:
-					self.player.movement[2] = False
-					self.player.movement[3] = False"""
-
 			if event.type == pygame.KEYUP:
 				if event.key == pygame.K_w:
 					self.player.movement[0] = False
@@ -228,9 +210,11 @@ class Game(object):
 
 
 	def update(self):
+		self.checkCollisions(self.player)
+
 		self.player.update(self.dt, self.screen_rect)		
 		#Moves the tiles to give the illusion of player movement
-		if self.player.camerax + self.player.movement_amount >= 0 and self.player.camerax <= self.player.maxx:
+		if self.player.camerax + self.player.movement_amount >= 0 and self.player.camerax <= self.player.maxx and  not self.player.onLadder:
 			self.player.camerax += self.player.movement_amount
 			for ladder in self.ladderList:
 				ladder.rect.x -= self.player.movement_amount
