@@ -78,8 +78,9 @@ class Player(object):
 		self.platform_rect.bottom = self.rect.bottom
 		self.platform_rect.left = self.rect.left
 
-		"""if self.movement[0]:
-			self.future_rect.y -= self.yvel*dt"""
+		if self.movement[0]:
+			pass
+
 
 		if self.movement[1]:
 			if not self.onLadder:
@@ -184,9 +185,10 @@ class Player(object):
 
 		#sprite changing
 		self.framebuffer += dt
-		if self.framebuffer > .5/self.framerate:
-			self.framebuffer = 0
-			self.frame += 1
+		if (self.onLadder and self.movement[0]):
+			if self.framebuffer > .5/self.framerate:
+				self.framebuffer = 0
+				self.frame += 1
 		if self.frame >= self.framelength:
 			self.frame = 0
 

@@ -10,9 +10,5 @@ class Platform(object):
 		self.rect.x = xpos
 		self.rect.y = ypos
 
-
-	def update(self):
-		pass
-
 	def draw(self, screen):
 		screen.blit(self.image, self.rect)
