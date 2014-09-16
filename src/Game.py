@@ -136,18 +136,15 @@ class Game(object):
 
 			for ladder in self.ladderList:
 				if entity.rect.colliderect(ladder.rect):
-					print  str(entity.onLadder) + " " +  str(entity.movement[1])
-
 					entity.currentLadder = ladder
 					if entity.rect.centerx > entity.currentLadder.rect.left and entity.rect.centerx < entity.currentLadder.rect.right and entity.movement[0]:
 						entity.onLadder = True
 
-						if entity.onLadder:
-							entity.rect.centerx = entity.currentLadder.rect.centerx
-							entity.jumping = False
-							entity.rect.y -= 10 *self.dt
-							if entity.rect.bottom< entity.currentLadder.rect.top:
-								entity.rect.bottom = entity.currentLadder.rect.top
+						entity.rect.centerx = entity.currentLadder.rect.centerx
+						entity.jumping = False
+						entity.rect.y -= 10 *self.dt
+						if entity.rect.bottom< entity.currentLadder.rect.top:
+							entity.rect.bottom = entity.currentLadder.rect.top
 						if entity.onLadder and entity.movement[1]:
 							entity.rect.y += 10 *self.dt
 
