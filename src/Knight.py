@@ -13,6 +13,7 @@ class Knight(object):
     self.ypos = yStart #+ screen.get_rect().height
     self.midAir = False # weather or not player is in air, to set gravity of not
     self.usingSpear = False
+    self.HP = 5
 
 
     self.enemy = enemyBool
@@ -68,10 +69,9 @@ class Knight(object):
     self.framebuffer = 0
 
   def update(self, dt, screen_rect, player, knightList, platforms, ladders):
-    if (self.playerNear(player) < 350 and not self.chasing) or (self.chasing and self.playerNear(player) < 500):
-
-      #if player is to the left or right of the knight
-      self.chasing = True
+    if (self.playerNear(player) < 350 and not self.chasing) or (self.chasing and self.playerNear(player) < 500 ):
+        #if player is to the left or right of the knight
+      	self.chasing = True
       if player.rect.x > self.rect.x:
 		self.movement[2]=False
 		self.movement[3]=True
@@ -198,13 +198,18 @@ class Knight(object):
 	self.frame = 0
 
   def checkSpearStab(self,player,knightList):
-  	if (self.playerNear(player) < 100 and self.enemy):
+  	if (self.playerNear(player) < 150 and self.enemy):
   		self.usingSpear = True
   		if  self.direction == 1:
   			self.spearRect.x = self.rect.x - 30
   		else:
   			self.spearRect.x = self.rect.centerx + 30	
   		self.spearRect.y = self.rect.centery
+  		if self.spearRect.colliderect(player.rect) and player.HP >0 and player.invulTimer<=0 and not player.ducking:
+
+  			player.HP -=1
+  			player.invulTimer = 100
+
   	else:
   		self.usingSpear = False
 
