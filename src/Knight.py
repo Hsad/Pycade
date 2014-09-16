@@ -12,11 +12,11 @@ class Knight(object):
     self.ypos = yStart #+ screen.get_rect().height
     self.midAir = False # weather or not player is in air, to set gravity of not
 
-    self.enemy = False
+    self.enemy = True
     if self.enemy == False:
       self.image = pygame.image.load("../assets/Art/knight_walk.png").convert_alpha() #allied 
     else:
-      self.image = pygame.image.load("../assets/Art/knight_walk.png").convert_alpha() #enemy (not implemented)
+      self.image = pygame.image.load("../assets/Art/enemy_knight_walk.png").convert_alpha() #enemy (not implemented)
     #self.magicCubeImage = pygame.image.load("../assets/Art/PlayerDuckingPlaceholder.png") #debug
     #self.cubeRect = pygame.Rect(0,0,64,64) #debug
     #self.cubeRect.x = screen.get_rect().centerx #debug
@@ -30,6 +30,16 @@ class Knight(object):
     self.footBoxRect =  pygame.Rect(0,0,32,20)
     self.footBoxRect.centerx = self.rect.x
     self.footBoxRect.centery = self.rect.bottom
+
+    self.leftBoxJumpImg = pygame.image.load("../assets/Art/knightLeftBox.png")
+    self.leftBoxJump =  pygame.Rect(0,0,32,20)
+    self.leftBoxJump.right = self.rect.left
+    self.leftBoxJump.top = self.rect.centery
+
+    self.rightBoxJumpImg = pygame.image.load("../assets/Art/knightRightBox.png")
+    self.rightBoxJump =  pygame.Rect(0,0,32,20)
+    self.rightBoxJump.left = self.rect.right
+    self.rightBoxJump.top = self.rect.centery
 
     self.movement = [False, False, False, False] #up down left right
     self.xvel = 0
@@ -54,7 +64,7 @@ class Knight(object):
     self.framebuffer = 0
 
   def update(self, dt, screen_rect, player, knightList, platforms, ladders):
-    if (self.playerNear(player) < 300 and not self.chasing) or (self.chasing and self.playerNear(player) < 500):
+    if (self.playerNear(player) < 350 and not self.chasing) or (self.chasing and self.playerNear(player) < 500):
       #if player is to the left or right of the knight
       self.chasing = True
       if player.rect.x > self.rect.x:
@@ -85,6 +95,12 @@ class Knight(object):
     self.footBoxRect.centerx = futureRect.centerx
     self.footBoxRect.centery = futureRect.bottom
 
+    self.leftBoxJump.right = futureRect.left
+    self.leftBoxJump.top = futureRect.centery
+
+    self.rightBoxJump.left = futureRect.right
+    self.rightBoxJump.top = futureRect.centery
+
 
     if self.movement[2]: #left
       if self.xvel > 0:
@@ -108,9 +124,17 @@ class Knight(object):
       """if not self.midAir: #on the ground
 	self.yvel = -300
 	self.midAir = True"""
-      #look for a ladder
-      #if found move tward ladder
-      #if on ladder, move up
+      #look for a low platform
+      for plat in platforms:
+	if self.movement[1] and self.rightBoxJump.colliderect(plat.rect):
+	  if not self.midAir: #on the ground
+	    self.yvel = -300
+	    self.midAir = True
+	elif self.movement[0] and self.leftBoxJump.colliderect(plat.rect):
+	  if not self.midAir: #on the ground
+	    self.yvel = -300
+	    self.midAir = True
+      #if found jump
 
     if self.midAir: #falling gravity or not
       self.yvel += self.gravity*dt
@@ -191,9 +215,11 @@ class Knight(object):
   def draw(self,screen):
     #screen.blit(self.magicCubeImage, self.cubeRect)
     screen.blit(self.footBoxImg, self.footBoxRect)
+    screen.blit(self.leftBoxJumpImg, self.leftBoxJump)
+    screen.blit(self.rightBoxJumpImg, self.rightBoxJump)
     #self.text = self.Dfont.render(str(self.yvel), 0, pygame.Color("red"), pygame.Color("black"))
     #screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-50, 10,10))
     #self.text = self.Dfont.render(str(self.midAir), 0, pygame.Color("red"), pygame.Color("black"))
     #screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-100, 10,10))
-    #screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80))
+    screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80))
 
