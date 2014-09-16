@@ -200,20 +200,13 @@ class Knight(object):
   def checkSpearStab(self,player,knightList):
   	if (self.playerNear(player) < 100 and self.enemy):
   		self.usingSpear = True
-  		if  not self.checkSide(player):
+  		if  self.direction == 1:
   			self.spearRect.x = self.rect.x - 30
   		else:
   			self.spearRect.x = self.rect.centerx + 30	
   		self.spearRect.y = self.rect.centery
   	else:
   		self.usingSpear = False
-  def checkSide(self,other):
-  	# Returns true if on Right side, false if on left
-  	if self.rect.centerx < other.rect.centerx:
-  		return True
-  	else:
-  		return False
-
 
   def deceleration(self, dimension, dt):
     if dimension == "x":
