@@ -6,11 +6,13 @@ class Knight(object):
     pygame.font.init() #debug
     self.Dfont = pygame.font.Font(None, 40) #debug
     self.Dvar = 0 #debug
-
+    self.spearRect = pygame.Rect(0,0,30,7)
+    self.spearImg = pygame.image.load("../assets/Art/spear_temp.png").convert_alpha()
     self.direction = 0 #0 left, 1 right
     self.xpos = xStart	
     self.ypos = yStart #+ screen.get_rect().height
     self.midAir = False # weather or not player is in air, to set gravity of not
+    self.usingSpear = False
 
 
     self.enemy = enemyBool
@@ -18,7 +20,7 @@ class Knight(object):
     if self.enemy == False:
       self.image = pygame.image.load("../assets/Art/knight_walk.png").convert_alpha() #allied 
     else:
-      self.image = pygame.image.load("../assets/Art/enemy_knight_walk.png").convert_alpha() #enemy (not implemented)
+      self.image = pygame.image.load("../assets/Art/enemy_knight_walk.png").convert_alpha() #enemy 
     #self.magicCubeImage = pygame.image.load("../assets/Art/PlayerDuckingPlaceholder.png") #debug
     #self.cubeRect = pygame.Rect(0,0,64,64) #debug
     #self.cubeRect.x = screen.get_rect().centerx #debug
@@ -67,31 +69,32 @@ class Knight(object):
 
   def update(self, dt, screen_rect, player, knightList, platforms, ladders):
     if (self.playerNear(player) < 350 and not self.chasing) or (self.chasing and self.playerNear(player) < 500):
+
       #if player is to the left or right of the knight
       self.chasing = True
       if player.rect.x > self.rect.x:
-	self.movement[2]=False
-	self.movement[3]=True
+		self.movement[2]=False
+		self.movement[3]=True
       else:
-	self.movement[2]=True
-	self.movement[3]=False      
+		self.movement[2]=True
+		self.movement[3]=False      
       #if player is above or below knight
       if player.rect.y > self.rect.y: #player is below knight
-	self.movement[1]=True
-	self.movement[0]=False
+		self.movement[1]=True
+		self.movement[0]=False
       elif player.rect.y < self.rect.y: #player is above
-	self.movement[0]=True
-	self.movement[1]=False
+		self.movement[0]=True
+		self.movement[1]=False
       else:
-	self.movement[0]=False
-	self.movement[1]=False
+		self.movement[0]=False
+		self.movement[1]=False
     else: #if self.playerNear(player) > 200 and self.chasing:
       self.chasing = False
       self.movement[0]=False
       self.movement[1]=False
       self.movement[2]=False
       self.movement[3]=False
-
+    self.checkSpearStab(player,knightList)
     #set preview hit box
     futureRect = self.rect.move(0,0)
     self.footBoxRect.centerx = futureRect.centerx
@@ -194,6 +197,24 @@ class Knight(object):
       if self.frame > 3:
 	self.frame = 0
 
+  def checkSpearStab(self,player,knightList):
+  	if (self.playerNear(player) < 100 and self.enemy):
+  		self.usingSpear = True
+  		if  not self.checkSide(player):
+  			self.spearRect.x = self.rect.x - 30
+  		else:
+  			self.spearRect.x = self.rect.centerx + 30	
+  		self.spearRect.y = self.rect.centery
+  	else:
+  		self.usingSpear = False
+  def checkSide(self,other):
+  	# Returns true if on Right side, false if on left
+  	if self.rect.centerx < other.rect.centerx:
+  		return True
+  	else:
+  		return False
+
+
   def deceleration(self, dimension, dt):
     if dimension == "x":
       if self.xvel < 0:
@@ -224,4 +245,7 @@ class Knight(object):
     #self.text = self.Dfont.render(str(self.midAir), 0, pygame.Color("red"), pygame.Color("black"))
     #screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-100, 10,10))
     screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80))
+    if self.usingSpear:
+    	screen.blit(self.spearImg,self.spearRect)
+
 
