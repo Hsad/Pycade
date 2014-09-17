@@ -35,7 +35,7 @@ class Cutscenes(object):
 				if event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_ESCAPE:
 						sys.exit()
-					if event.key == pygame.K_RETURN:
+					if event.key == pygame.K_SPACE:
 						self.enter_pressed = True
 					else:
 						self.enter_pressed = False
