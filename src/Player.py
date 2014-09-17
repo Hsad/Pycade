@@ -209,7 +209,6 @@ class Player(object):
 
 	def draw(self,screen):
 		if self.onLadder:
-			print "Made it here"
 			screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), (2*self.state) * 80 , 64, 80))
 		if self.jumping:
 			if self.yvel < 0:
