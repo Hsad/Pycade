@@ -124,7 +124,9 @@ class Game(object):
 					self.player.rect.x = self.platformx
 					self.player.rect.y = self.platformy
 				if self.symbol == "K":
-					self.knightList.append(Knight.Knight(self.screen, self.platformx, self.platformy))
+					self.knightList.append(Knight.Knight(self.screen, self.platformx, self.platformy,False))
+				if self.symbol == "E":
+					self.knightList.append(Knight.Knight(self.screen, self.platformx, self.platformy,True))
 				self.platformx += 40
 			self.platformy += 40
 
@@ -179,8 +181,9 @@ class Game(object):
 					#	entity.ducking = False
 					#	entity.yvel += 10 * self.dt
 
-
-				if entity.currentLadder and (entity.rect.left > entity.currentLadder.rect.right or entity.rect.right < entity.currentLadder.rect.left) and entity.onLadder :
+				if entity.currentLadder and (entity.rect.bottom < entity.currentLadder.rect.top):
+					entity.onLadder = False
+				if entity.currentLadder and ((entity.rect.left > entity.currentLadder.rect.right or entity.rect.right < entity.currentLadder.rect.left) ) :
 
 					entity.jumping=True
 		 			entity.onLadder = False
@@ -206,40 +209,43 @@ class Game(object):
 
 
 	def update(self):
-		self.checkCollisions(self.player)
+		print str(self.player.HP) + " "+ str(self.player.invulTimer)
+		if self.player.HP >0:
+			self.checkCollisions(self.player)
 
-		self.player.update(self.dt, self.screen_rect)		
-		#Moves the tiles to give the illusion of player movement
-		if self.player.camerax + self.player.movement_amount >= 0 and self.player.camerax <= self.player.maxx and  not self.player.onLadder:
-			self.player.camerax += self.player.movement_amount
-			for ladder in self.ladderList:
-				ladder.rect.x -= self.player.movement_amount
-			for platform in self.platform_boundaries_list:
-				platform.rect.x -= self.player.movement_amount
-			for platform in self.platform_draw_list:
-				platform.rect.x -= self.player.movement_amount
-			for knight in self.knightList:
-				knight.rect.x -= self.player.movement_amount
-			for item in self.set_props:
-				item.x -= self.player.movement_amount
-		elif self.player.camerax + self.player.movement_amount < 0:
-			for ladder in self.ladderList:
-				ladder.rect.x -= self.player.camerax
-			for platform in self.platform_boundaries_list:
-				platform.rect.x -= self.player.camerax
-			for platform in self.platform_draw_list:
-				platform.rect.x -= self.player.camerax
-			for knight in self.knightList:
-				knight.rect.x -= self.player.camerax
-			for item in self.set_props:
-				item.x -= self.player.camerax
-			self.player.camerax = 0
+			self.player.update(self.dt, self.screen_rect)		
+			#Moves the tiles to give the illusion of player movement
+			if self.player.camerax + self.player.movement_amount >= 0 and self.player.camerax <= self.player.maxx and  not self.player.onLadder:
+				self.player.camerax += self.player.movement_amount
+				for ladder in self.ladderList:
+					ladder.rect.x -= self.player.movement_amount
+				for platform in self.platform_boundaries_list:
+					platform.rect.x -= self.player.movement_amount
+				for platform in self.platform_draw_list:
+					platform.rect.x -= self.player.movement_amount
+				for knight in self.knightList:
+					knight.rect.x -= self.player.movement_amount
+				for item in self.set_props:
+					item.x -= self.player.movement_amount
+			elif self.player.camerax + self.player.movement_amount < 0:
+				for ladder in self.ladderList:
+					ladder.rect.x -= self.player.camerax
+				for platform in self.platform_boundaries_list:
+					platform.rect.x -= self.player.camerax
+				for platform in self.platform_draw_list:
+					platform.rect.x -= self.player.camerax
+				for knight in self.knightList:
+					knight.rect.x -= self.player.camerax
+				for item in self.set_props:
+					item.x -= self.player.camerax
+				self.player.camerax = 0
 
-		#knights
+			#knights
 		for kUp in self.knightList:
 			kUp.update(self.dt, self.screen_rect, self.player, self.knightList, self.platform_boundaries_list, self.ladderList)
-		
 		self.checkCollisions(self.player)
+		if self.player.invulTimer >0:
+			self.player.invulTimer -=1
 
 	def draw(self):
 		#self.screen.fill((0,0,0))
@@ -276,7 +282,10 @@ class Game(object):
 				dirty += 40
 				self.counter += 1
 			platform.draw(self.screen)
-		self.player.draw(self.screen)
+		if self.player.invulTimer == 0:
+			self.player.draw(self.screen)
+		elif  random.random() > .2:
+			self.player.draw(self.screen)
 		#knights
 		for kDraw in self.knightList:
 			kDraw.draw(self.screen)

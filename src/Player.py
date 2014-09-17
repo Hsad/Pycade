@@ -35,7 +35,8 @@ class Player(object):
 		self.camerax = 0
 		self.maxx = 4000 #The width of the level
 
-
+		self.HP = 2
+		self.invulTimer = 100
 		self.rect.x = 0
 		self.rect.y = screen.get_rect().height
 		#up, down, left, right
