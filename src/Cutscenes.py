@@ -14,6 +14,12 @@ class Cutscenes(object):
 		self.text4 = self.font.render("", 0, pygame.Color("red"), pygame.Color("black"))
 
 		self.text5 = self.font.render("", 0, pygame.Color("red"), pygame.Color("black"))
+
+		self.title_image = pygame.image.load("../assets/Art/royalrescue.png").convert_alpha()
+
+		self.imageRect = self.title_image.get_rect()
+		self.imageRect.x = 200
+		self.imageRect.y = 100
 		
 		
 		#Team Logo Animation Pieces
@@ -72,6 +78,8 @@ class Cutscenes(object):
 				self.screen.blit(self.menu_background, pygame.Rect(0, 0, 800, 600))
 				self.screen.blit(self.knight_image, self.knight_rect, pygame.Rect(64, 0, 64, 80))
 				self.screen.blit(self.player.image, self.player.rect, pygame.Rect(64*(self.player.frame), (2*self.player.state + 1) * 80 , 64, 80))
+				self.screen.blit(self.title_image,self.imageRect)
+
 				#self.player.draw(self.screen)
 				
 				
