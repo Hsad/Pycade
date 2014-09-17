@@ -97,6 +97,7 @@ class Knight(object):
     self.framebuffer = 0
 
   def update(self, dt, screen_rect, player, knightList, platforms, ladders):
+  	
     target = player    
     targetDist = self.playerNear(player)
     if not self.enemy:
@@ -264,6 +265,22 @@ class Knight(object):
 
   	else:
   		self.usingSpear = False
+  	for knight in knightList:
+  		if(self.playerNear(knight)< 100 and self.enemy != knight.enemy):
+  			self.usingSpear = True
+  			if  self.direction == 1:
+  				self.spearRect.x = self.rect.x - 30
+  			else:
+					self.spearRect.x = self.rect.centerx + 30	
+  			self.spearRect.y = self.rect.centery
+  		if self.spearRect.colliderect(knight.rect) and knight.HP > 0 and knight.invulTimer<=0:
+  			self.HP-=1
+  			self.invulTimer = 100
+  		else:
+  			self.usingSpear = False
+
+
+      
 
   def deceleration(self, dimension, dt):
     if dimension == "x":
@@ -381,16 +398,16 @@ class Knight(object):
     pygame.draw.line(screen, (0,200,0), self.rect.center, (self.rect.centerx + 81, self.rect.centery - 140)) 
     pygame.draw.line(screen, (0,200,0), self.rect.center, (self.rect.centerx - 81, self.rect.centery - 140))
 
-    self.text = self.Dfont.render("leftJump "+str(self.debug1), 0, pygame.Color("red"), pygame.Color("black"))
+    self.text = self.Dfont.render("HP "+str(self.HP), 0, pygame.Color("red"), pygame.Color("black"))
     screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-50, 10,10))
-    self.text = self.Dfont.render("rightJump "+str(self.debug2), 0, pygame.Color("red"), pygame.Color("black"))
-    screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-100, 10,10))
-    self.text = self.Dfont.render("pathing "+str(self.pathing), 0, pygame.Color("red"), pygame.Color("black"))
-    screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-150, 10,10))    
-    self.text = self.Dfont.render("leftSafe "+str(self.debug3), 0, pygame.Color("red"), pygame.Color("black"))
-    screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-200, 10,10))
-    self.text = self.Dfont.render("rightSafe "+str(self.debug4), 0, pygame.Color("red"), pygame.Color("black"))
-    screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-250, 10,10))
+   # self.text = self.Dfont.render("rightJump "+str(self.debug2), 0, pygame.Color("red"), pygame.Color("black"))
+   # screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-100, 10,10))
+   # self.text = self.Dfont.render("pathing "+str(self.pathing), 0, pygame.Color("red"), pygame.Color("black"))
+   # screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-150, 10,10))    
+   # self.text = self.Dfont.render("leftSafe "+str(self.debug3), 0, pygame.Color("red"), pygame.Color("black"))
+   # screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-200, 10,10))
+   # self.text = self.Dfont.render("rightSafe "+str(self.debug4), 0, pygame.Color("red"), pygame.Color("black"))
+   # screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-250, 10,10))
     #self.text = self.Dfont.render("unsafeAfter "+str(self.debug5), 0, pygame.Color("red"), pygame.Color("black"))
     #screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-275, 10,10))
 

@@ -243,6 +243,8 @@ class Game(object):
 			#knights
 		for kUp in self.knightList:
 			kUp.update(self.dt, self.screen_rect, self.player, self.knightList, self.platform_boundaries_list, self.ladderList)
+			if kUp.invulTimer>0:
+				kUp.invulTimer-=1
 		self.checkCollisions(self.player)
 		if self.player.invulTimer >0:
 			self.player.invulTimer -=1
@@ -288,7 +290,11 @@ class Game(object):
 			self.player.draw(self.screen)
 		#knights
 		for kDraw in self.knightList:
-			kDraw.draw(self.screen)
+			if kDraw.invulTimer == 0:
+				kDraw.draw(self.screen)
+			elif  random.random() > .2:
+				kDraw.draw(self.screen)
+			
 			
 		#Draw the castle gate last so it looks like everything is going through it
 		self.screen.blit(self.castle_entrence_image, self.enemy_castle_entrence_rect)
