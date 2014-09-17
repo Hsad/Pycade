@@ -45,6 +45,10 @@ class Game(object):
 		self.set_props.append(self.enemy_castle_entrence_rect)
 		self.set_props.append(self.good_castle_entrence_rect)
 		self.castle_background_image = pygame.image.load("../assets/Art/Castle_Background.png").convert_alpha()
+		
+		#Make the player spawn above the screen just to the right of the castle
+		self.player.rect.x = self.good_castle_entrence_rect.right
+		self.player.rect.y = 0-self.player.rect.height
 
 		#Generate a list of rects from a text file named Platform.txt
 		#Type - where there isn't a platform
@@ -120,16 +124,17 @@ class Game(object):
 							if self.previous_platform == "Grass":
 								self.platform_draw_list[-1].image = self.grass_platform_image_middle
 					self.previous_tile_is_platform = False
-				if self.symbol == "S":
-					self.player.rect.x = self.platformx
-					self.player.rect.y = self.platformy
 				if self.symbol == "K":
 					self.knightList.append(Knight.Knight(self.screen, self.platformx, self.platformy,False))
 				if self.symbol == "E":
 					self.knightList.append(Knight.Knight(self.screen, self.platformx, self.platformy,True))
 				self.platformx += 40
 			self.platformy += 40
-
+			
+		#Load the music
+		self.background_music = pygame.mixer.music.load("../assets/Audio/Music/Castle.wav")
+		pygame.mixer.music.play(-1, 0.0)
+		
 	def process_events(self):
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -299,3 +304,4 @@ class Game(object):
 		#Draw the castle gate last so it looks like everything is going through it
 		self.screen.blit(self.castle_entrence_image, self.enemy_castle_entrence_rect)
 		self.screen.blit(pygame.transform.flip(self.castle_entrence_image, True, False), self.good_castle_entrence_rect)
+		self.screen.blit(pygame.image.load("../assets/Art/Bedsheet_Rope.png").convert_alpha(), pygame.Rect(self.good_castle_entrence_rect.right-32, -40, 32, 600))
