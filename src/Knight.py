@@ -389,13 +389,13 @@ class Knight(object):
 
   def draw(self,screen):
     #screen.blit(self.magicCubeImage, self.cubeRect)
-    screen.blit(self.footBoxImg, self.footBoxRect)
+    """screen.blit(self.footBoxImg, self.footBoxRect)
     screen.blit(self.leftBoxJumpImg, self.leftBoxJump)
     screen.blit(self.rightBoxJumpImg, self.rightBoxJump)
     screen.blit(self.rightBoxJumpImg, self.rightPathFall)
-    screen.blit(self.rightBoxJumpImg, self.leftPathFall)
+    screen.blit(self.rightBoxJumpImg, self.leftPathFall)"""
 
-    pygame.draw.line(screen, (0,200,0), self.rect.center, (self.rect.centerx + 81, self.rect.centery - 140)) 
+    """pygame.draw.line(screen, (0,200,0), self.rect.center, (self.rect.centerx + 81, self.rect.centery - 140)) 
     pygame.draw.line(screen, (0,200,0), self.rect.center, (self.rect.centerx - 81, self.rect.centery - 140))
 
     self.text = self.Dfont.render("HP "+str(self.HP), 0, pygame.Color("red"), pygame.Color("black"))
@@ -411,8 +411,13 @@ class Knight(object):
     #self.text = self.Dfont.render("unsafeAfter "+str(self.debug5), 0, pygame.Color("red"), pygame.Color("black"))
     #screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-275, 10,10))
 
-    screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80))
+    """
+
     if self.usingSpear:
     	screen.blit(self.spearImg,self.spearRect)
+        screen.blit(self.image, self.rect, pygame.Rect(110*(self.frame), self.direction*80, 110, 80))
+    else:
+        screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80))
+
 
 
