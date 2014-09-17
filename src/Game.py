@@ -132,7 +132,7 @@ class Game(object):
 			self.platformy += 40
 			
 		#Load the music
-		self.background_music = pygame.mixer.music.load("../assets/Audio/Music/Castle.wav")
+		self.background_music = pygame.mixer.music.load("../assets/Audio/Music/Main Theme.wav")
 		pygame.mixer.music.play(-1, 0.0)
 		
 	def process_events(self):

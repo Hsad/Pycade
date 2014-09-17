@@ -1,6 +1,3 @@
-- Come up with a name (All)
-
-
 Intro/Ending
 - Make main menu										<Vacant>
 - Make ending cutscene										Thomas
