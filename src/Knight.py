@@ -6,6 +6,11 @@ class Knight(object):
     pygame.font.init() #debug
     self.Dfont = pygame.font.Font(None, 40) #debug
     self.Dvar = 0 #debug
+    self.debug1 = 0
+    self.debug2 = 0    
+    self.debug3 = 0
+    self.debug4 = 0
+    self.debug5 = 0
 
     self.direction = 0 #0 left, 1 right
     self.xpos = xStart	
@@ -25,23 +30,43 @@ class Knight(object):
     self.rect = pygame.Rect(0,0,64,80)
     self.rect.x = self.xpos
     self.rect.y = self.ypos - self.rect.height
-    
+    #foot collider
     self.footBoxImg = pygame.image.load("../assets/Art/knightFootBox.png")
     self.footBoxRect =  pygame.Rect(0,0,32,20)
     self.footBoxRect.centerx = self.rect.x
     self.footBoxRect.centery = self.rect.bottom
-
+    #left jumping collider
     self.leftBoxJumpImg = pygame.image.load("../assets/Art/knightLeftBox.png")
     self.leftBoxJump =  pygame.Rect(0,0,32,20)
     self.leftBoxJump.right = self.rect.left
     self.leftBoxJump.top = self.rect.centery
-
+    #right jumping collider
     self.rightBoxJumpImg = pygame.image.load("../assets/Art/knightRightBox.png")
     self.rightBoxJump =  pygame.Rect(0,0,32,20)
     self.rightBoxJump.left = self.rect.right
     self.rightBoxJump.top = self.rect.centery
+    #right fall prevention Collider
+    self.rightPathFallImg = pygame.image.load("../assets/Art/knightRightBox.png")
+    self.rightPathFall =  pygame.Rect(0,0,32,20)
+    self.rightPathFall.left = self.rect.right
+    self.rightPathFall.top = self.rect.bottom
+    #left fall prevention collider
+    self.leftPathFallImg = pygame.image.load("../assets/Art/knightLeftBox.png")
+    self.leftPathFall =  pygame.Rect(0,0,32,20)
+    self.leftPathFall.right = self.rect.left
+    self.leftPathFall.top = self.rect.bottom
+    #right possible jump Collider
+    self.rightPosJumpImg = pygame.image.load("../assets/Art/knightRightBox.png")
+    self.rightPosJump =  pygame.Rect(0,0,32,20)
+    self.rightPosJump.left = self.rect.right
+    self.rightPosJump.top = self.rect.centery
+    #left possible jump collider
+    self.leftPosJumpImg = pygame.image.load("../assets/Art/knightLeftBox.png")
+    self.leftPosJump =  pygame.Rect(0,0,32,20)
+    self.leftPosJump.right = self.rect.left
+    self.leftPosJump.top = self.rect.centery
 
-    self.movement = [False, False, False, False] #up down left right
+    self.movement = [False, False, False, False, True] #up down left right wander
     self.xvel = 0
     self.yvel = 0
 
@@ -58,13 +83,15 @@ class Knight(object):
     #max line of sight
     self.MAXSIGHT = 500
     self.chasing = False
+    self.PRESISTANCE = random.randint(-100,100)
+    self.pathing = False
     #values for sprite changes
     self.frame = 0
     self.framerate = 2
     self.framebuffer = 0
 
   def update(self, dt, screen_rect, player, knightList, platforms, ladders):
-    if (self.playerNear(player) < 350 and not self.chasing) or (self.chasing and self.playerNear(player) < 500):
+    if not self.pathing and ((self.playerNear(player) < 350 and not self.chasing) or (self.chasing and self.playerNear(player) < 650 + self.PRESISTANCE)):
       #if player is to the left or right of the knight
       self.chasing = True
       if player.rect.x > self.rect.x:
@@ -74,7 +101,7 @@ class Knight(object):
 	self.movement[2]=True
 	self.movement[3]=False      
       #if player is above or below knight
-      if player.rect.y > self.rect.y: #player is below knight
+      if player.rect.y >= self.rect.y: #player is below knight
 	self.movement[1]=True
 	self.movement[0]=False
       elif player.rect.y < self.rect.y: #player is above
@@ -83,12 +110,13 @@ class Knight(object):
       else:
 	self.movement[0]=False
 	self.movement[1]=False
-    else: #if self.playerNear(player) > 200 and self.chasing:
+    elif not self.pathing: #if
       self.chasing = False
       self.movement[0]=False
       self.movement[1]=False
       self.movement[2]=False
       self.movement[3]=False
+
 
     #set preview hit box
     futureRect = self.rect.move(0,0)
@@ -101,6 +129,30 @@ class Knight(object):
     self.rightBoxJump.left = futureRect.right
     self.rightBoxJump.top = futureRect.centery
 
+
+#Pathing checks
+    if self.pathing:
+	self.path(platforms, player)
+
+    if self.movement[0] and self.chasing: #up
+      if not self.playerAbove(player) or self.pathing: #player is far enough to the left or right of the knight to follow normaly
+	#self.pathing = False
+        """if not self.midAir: #on the ground
+	  self.yvel = -300
+	  self.midAir = True"""        
+        for plat in platforms: #look for a low platform
+	  if self.movement[3] and self.rightBoxJump.colliderect(plat.rect):
+	    if not self.midAir: #on the ground
+	      self.yvel = -300
+	      self.midAir = True
+	  elif self.movement[2] and self.leftBoxJump.colliderect(plat.rect):
+	    if not self.midAir: #on the ground
+	      self.yvel = -300
+	      self.midAir = True
+      else: #player is above knight, seek alt path
+	self.pathing = True
+	self.path(platforms, player)
+	
 
     if self.movement[2]: #left
       if self.xvel > 0:
@@ -119,22 +171,6 @@ class Knight(object):
 	self.direction = 0
       if self.xvel > self.xmax:
 	self.xvel = self.xmax    
-
-    if self.movement[0]: #up
-      """if not self.midAir: #on the ground
-	self.yvel = -300
-	self.midAir = True"""
-      #look for a low platform
-      for plat in platforms:
-	if self.movement[1] and self.rightBoxJump.colliderect(plat.rect):
-	  if not self.midAir: #on the ground
-	    self.yvel = -300
-	    self.midAir = True
-	elif self.movement[0] and self.leftBoxJump.colliderect(plat.rect):
-	  if not self.midAir: #on the ground
-	    self.yvel = -300
-	    self.midAir = True
-      #if found jump
 
     if self.midAir: #falling gravity or not
       self.yvel += self.gravity*dt
@@ -211,15 +247,115 @@ class Knight(object):
       return dist
     else:
       return dist
+  
+  def playerAbove(self, player):
+    #the sighns are flipped between these two so the math is upright
+    xDist = player.rect.centerx - self.rect.centerx 
+    yDist = self.rect.centery - player.rect.top
+    oa = 0
+    if xDist != 0:
+      oa = float(yDist) / float(xDist)
+      #print "The next line should be a float"
+      #print oa
+    #else:
+      #print "ERROR DIVIDE BY ZERO" 
+    tanAngle = abs(math.degrees(math.atan(oa)))
+    #print tanAngle
+    if tanAngle < 60:
+      return False
+    else:
+      return True
+
+  def path(self, platforms, player):   
+    if self.midAir:
+      return
+    if self.rect.centery <= player.rect.centery: #player is level with or below knight
+      self.pathing = False
+
+    leftSafe = True
+    rightSafe = True
+    leftJump = False
+    rightJump = False
+    for plat in platforms:
+      for off in xrange(10):
+	#is there something to jump on
+	if rightSafe and self.rightPosJump.colliderect(plat.rect):#rightSafe and 
+	  rightJump = True
+	  break
+	else:
+	  self.rightPosJump.x += 40
+	if leftSafe and self.leftPosJump.colliderect(plat.rect):#leftSafe and 
+	  leftJump = True
+	  break
+	else:
+	  self.leftPosJump.x -= 40
+	#will i fall if I go this way
+	if leftSafe and self.leftPathFall.colliderect(plat.rect):
+	  self.leftPathFall.x -= 40
+	else:
+	  leftSafe = False
+	  if self.debug5 == 0:#debug
+	    self.debug5 = off#debug
+	if rightSafe and self.rightPathFall.colliderect(plat.rect):
+	  self.rightPathFall.x += 40
+	else:
+	  rightSafe = False
+	
+	
+
+      self.leftPathFall.topright = self.rect.bottomleft
+      self.rightPathFall.topleft = self.rect.bottomright
+      self.leftPosJump.topright = self.rect.midleft
+      self.rightPosJump.topleft = self.rect.midright
+      if leftJump or rightJump:
+	break
+
+    #if jumpRight and jumpLeft:
+    if rightJump:
+      #set movement to right
+      self.movement[3] = True
+      self.movement[2] = False
+      self.movement[4] = False
+    elif leftJump:
+      #set movement left
+      self.movement[2] = True
+      self.movement[3] = False      
+      self.movement[4] = False
+    else: #no where to go
+      #set wander true <<<<<<<<<<<<<<<
+      self.movement[4] = True
+      #halt for now
+      #self.movement[2]=False
+      #self.movement[3]=False
+    
+    self.debug1 = leftJump
+    self.debug2 = rightJump
+    self.debug3 = leftSafe
+    self.debug4 = rightSafe
 
   def draw(self,screen):
     #screen.blit(self.magicCubeImage, self.cubeRect)
     screen.blit(self.footBoxImg, self.footBoxRect)
     screen.blit(self.leftBoxJumpImg, self.leftBoxJump)
     screen.blit(self.rightBoxJumpImg, self.rightBoxJump)
-    #self.text = self.Dfont.render(str(self.yvel), 0, pygame.Color("red"), pygame.Color("black"))
-    #screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-50, 10,10))
-    #self.text = self.Dfont.render(str(self.midAir), 0, pygame.Color("red"), pygame.Color("black"))
-    #screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-100, 10,10))
+    screen.blit(self.rightBoxJumpImg, self.rightPathFall)
+    screen.blit(self.rightBoxJumpImg, self.leftPathFall)
+
+    pygame.draw.line(screen, (0,200,0), self.rect.center, (self.rect.centerx + 81, self.rect.centery - 140)) 
+    pygame.draw.line(screen, (0,200,0), self.rect.center, (self.rect.centerx - 81, self.rect.centery - 140))
+
+    self.text = self.Dfont.render("leftJump "+str(self.debug1), 0, pygame.Color("red"), pygame.Color("black"))
+    screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-50, 10,10))
+    self.text = self.Dfont.render("rightJump "+str(self.debug2), 0, pygame.Color("red"), pygame.Color("black"))
+    screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-100, 10,10))
+    self.text = self.Dfont.render("pathing "+str(self.pathing), 0, pygame.Color("red"), pygame.Color("black"))
+    screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-150, 10,10))    
+    self.text = self.Dfont.render("leftSafe "+str(self.debug3), 0, pygame.Color("red"), pygame.Color("black"))
+    screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-200, 10,10))
+    self.text = self.Dfont.render("rightSafe "+str(self.debug4), 0, pygame.Color("red"), pygame.Color("black"))
+    screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-250, 10,10))
+    #self.text = self.Dfont.render("unsafeAfter "+str(self.debug5), 0, pygame.Color("red"), pygame.Color("black"))
+    #screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-275, 10,10))
+
     screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80))
 
