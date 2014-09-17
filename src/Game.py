@@ -214,7 +214,6 @@ class Game(object):
 
 
 	def update(self):
-		print str(self.player.HP) + " "+ str(self.player.invulTimer)
 		if self.player.HP >0:
 			self.checkCollisions(self.player)
 

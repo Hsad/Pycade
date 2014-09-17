@@ -20,14 +20,14 @@ class Knight(object):
     self.midAir = False # weather or not player is in air, to set gravity of not
     self.usingSpear = False
     self.HP = 5
-    self.invulTimer =100
+    self.invulTimer = 0
 
     self.enemy = enemyBool
 
     if self.enemy == False:
       self.image = pygame.image.load("../assets/Art/knight_walk.png").convert_alpha() #allied 
     else:
-      self.image = pygame.image.load("../assets/Art/enemy_knight_walk.png").convert_alpha() #enemy 
+      self.image = pygame.image.load("../assets/Art/enemy_knight_master.png").convert_alpha() #enemy 
     #self.magicCubeImage = pygame.image.load("../assets/Art/PlayerDuckingPlaceholder.png") #debug
     #self.cubeRect = pygame.Rect(0,0,64,64) #debug
     #self.cubeRect.x = screen.get_rect().centerx #debug
@@ -93,8 +93,9 @@ class Knight(object):
     self.pathing = False
     #values for sprite changes
     self.frame = 0
-    self.framerate = 2
+    self.framerate = 4
     self.framebuffer = 0
+    self.framelength = 5
 
   def update(self, dt, screen_rect, player, knightList, platforms, ladders):
   	
@@ -238,6 +239,12 @@ class Knight(object):
 
     #update location
     self.rect = futureRect
+
+
+    if self.usingSpear:
+        self.framelength = 4
+    else:
+        self.framelength = 5
     
     #sprite changing
     if self.movement == [False, False, False, False]:
@@ -247,7 +254,7 @@ class Knight(object):
       if self.framebuffer > .5/self.framerate:
 	self.framebuffer = 0
 	self.frame += 1
-      if self.frame > 3:
+      if self.frame >= self.framelength:
 	self.frame = 0
 
   def checkSpearStab(self,player,knightList):
@@ -265,7 +272,7 @@ class Knight(object):
 
   	else:
   		self.usingSpear = False
-  	for knight in knightList:
+  	"""for knight in knightList:
   		if(self.playerNear(knight)< 100 and self.enemy != knight.enemy):
   			self.usingSpear = True
   			if  self.direction == 1:
@@ -277,9 +284,7 @@ class Knight(object):
   			self.HP-=1
   			self.invulTimer = 100
   		else:
-  			self.usingSpear = False
-
-
+  			self.usingSpear = False"""
       
 
   def deceleration(self, dimension, dt):
@@ -389,13 +394,13 @@ class Knight(object):
 
   def draw(self,screen):
     #screen.blit(self.magicCubeImage, self.cubeRect)
-    screen.blit(self.footBoxImg, self.footBoxRect)
+    """screen.blit(self.footBoxImg, self.footBoxRect)
     screen.blit(self.leftBoxJumpImg, self.leftBoxJump)
     screen.blit(self.rightBoxJumpImg, self.rightBoxJump)
     screen.blit(self.rightBoxJumpImg, self.rightPathFall)
-    screen.blit(self.rightBoxJumpImg, self.leftPathFall)
+    screen.blit(self.rightBoxJumpImg, self.leftPathFall)"""
 
-    pygame.draw.line(screen, (0,200,0), self.rect.center, (self.rect.centerx + 81, self.rect.centery - 140)) 
+    """pygame.draw.line(screen, (0,200,0), self.rect.center, (self.rect.centerx + 81, self.rect.centery - 140)) 
     pygame.draw.line(screen, (0,200,0), self.rect.center, (self.rect.centerx - 81, self.rect.centery - 140))
 
     self.text = self.Dfont.render("HP "+str(self.HP), 0, pygame.Color("red"), pygame.Color("black"))
@@ -411,8 +416,13 @@ class Knight(object):
     #self.text = self.Dfont.render("unsafeAfter "+str(self.debug5), 0, pygame.Color("red"), pygame.Color("black"))
     #screen.blit(self.text, pygame.Rect(self.rect.x,self.rect.y-275, 10,10))
 
-    screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80))
+    """
+
     if self.usingSpear:
-    	screen.blit(self.spearImg,self.spearRect)
+    	#screen.blit(self.spearImg,self.spearRect)
+        screen.blit(self.image, self.rect, pygame.Rect(110*(self.frame), (self.direction+2)*80, 110, 80))
+    else:
+        screen.blit(self.image, self.rect, pygame.Rect(64*(self.frame), self.direction*80, 64, 80))
+
 
 
