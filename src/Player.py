@@ -35,7 +35,8 @@ class Player(object):
 		self.camerax = 0
 		self.maxx = 4000 #The width of the level
 
-
+		self.HP = 2
+		self.invulTimer = 100
 		self.rect.x = 0
 		self.rect.y = screen.get_rect().height
 		#up, down, left, right
@@ -184,8 +185,8 @@ class Player(object):
 
 
 		#sprite changing
-		self.framebuffer += dt
-		if (self.onLadder and self.movement[0]):
+		if not (self.onLadder and not self.movement[0]):
+			self.framebuffer += dt
 			if self.framebuffer > .5/self.framerate:
 				self.framebuffer = 0
 				self.frame += 1
