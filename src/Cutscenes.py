@@ -6,6 +6,9 @@ class Cutscenes(object):
 		self.screen = pygame.display.set_mode((800, 600))
 		
 		self.current_state = "Team Logo"
+		self.font= pygame.font.Font(None,20)
+		self.text = self.font.render("", 0, pygame.Color("red"), pygame.Color("black"))
+      	
 		
 		#Team Logo Animation Pieces
 		self.logo_animation_start = pygame.image.load("../assets/Art/Logo_Entrence_Animation.png").convert_alpha()
@@ -64,6 +67,8 @@ class Cutscenes(object):
 				
 				print self.player.rect.x
 				self.player.draw(self.screen)
-				
+				self.text = self.font.render("Help, the prince has been taken!", 0, pygame.Color("red"), pygame.Color("black"))
+      			self.screen.blit(self.text, pygame.Rect(250,250, 10,10))
+		
 			
 			pygame.display.flip()
