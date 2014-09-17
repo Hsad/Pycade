@@ -20,7 +20,7 @@ class Knight(object):
     self.midAir = False # weather or not player is in air, to set gravity of not
     self.usingSpear = False
     self.HP = 5
-
+    self.invulTimer =100
 
     self.enemy = enemyBool
 
