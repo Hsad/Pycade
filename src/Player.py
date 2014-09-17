@@ -65,7 +65,7 @@ class Player(object):
 		self.onPlatform = False
 
 		#max horizontal speed
-		self.xmax = 400
+		self.xmax = 300
 
 		#values for sprite changes
 		self.frame = 0
