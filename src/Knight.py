@@ -20,7 +20,7 @@ class Knight(object):
     self.midAir = False # weather or not player is in air, to set gravity of not
     self.usingSpear = False
     self.HP = 5
-
+    self.invulTimer =100
 
     self.enemy = enemyBool
 
@@ -97,22 +97,38 @@ class Knight(object):
     self.framebuffer = 0
 
   def update(self, dt, screen_rect, player, knightList, platforms, ladders):
+    target = player    
+    targetDist = self.playerNear(player)
+    if not self.enemy:
+      for Kn in knightList:
+	if Kn.enemy:
+	  if self.playerNear(Kn) < targetDist: #seek nearest enemy, or player
+	    targetDist = self.playerNear(Kn)
+	    target = Kn
+    else: #is an enemy
+      for Kn in knightList:
+	if not Kn.enemy:
+	  if self.playerNear(Kn) + 350 < targetDist: #new target is much closer than player
+	    targetDist = self.playerNear(Kn)
+	    target = Kn
+
+
     if not self.pathing and ((self.playerNear(player) < 350 and not self.chasing) or (self.chasing and self.playerNear(player) < 650 + self.PRESISTANCE)):
       #if player is to the left or right of the knight
       self.chasing = True
-      if player.rect.x > self.rect.x:
-		self.movement[2]=False
-		self.movement[3]=True
+      if target.rect.x > self.rect.x:
+	self.movement[2]=False
+	self.movement[3]=True
       else:
-		self.movement[2]=True
-		self.movement[3]=False      
+	self.movement[2]=True
+	self.movement[3]=False      
       #if player is above or below knight
-      if player.rect.y >= self.rect.y: #player is below knight
+      if target.rect.y >= self.rect.y: #player is below knight
 	self.movement[1]=True
 	self.movement[0]=False
-      elif player.rect.y < self.rect.y: #player is above
-		self.movement[0]=True
-		self.movement[1]=False
+      elif target.rect.y < self.rect.y: #player is above
+	self.movement[0]=True
+	self.movement[1]=False
       else:
 	self.movement[0]=False
 	self.movement[1]=False
@@ -140,7 +156,7 @@ class Knight(object):
 	self.path(platforms, player)
 
     if self.movement[0] and self.chasing: #up
-      if not self.playerAbove(player) or self.pathing: #player is far enough to the left or right of the knight to follow normaly
+      if not self.playerAbove(target) or self.pathing: #player is far enough to the left or right of the knight to follow normaly
 	#self.pathing = False
         """if not self.midAir: #on the ground
 	  self.yvel = -300
@@ -287,7 +303,7 @@ class Knight(object):
     else:
       return True
 
-  def path(self, platforms, player):   
+  def path(self, platforms, player):  #arguably none of this does anything 
     if self.midAir:
       return
     if self.rect.centery <= player.rect.centery: #player is level with or below knight

@@ -168,7 +168,7 @@ class Game(object):
 					if entity.rect.centerx > entity.currentLadder.rect.left and entity.rect.centerx < entity.currentLadder.rect.right and entity.movement[0]:
 						entity.onLadder = True
 
-						entity.rect.centerx = entity.currentLadder.rect.centerx
+						#entity.rect.centerx = entity.currentLadder.rect.centerx
 						entity.jumping = False
 						entity.rect.y -= 10 *self.dt
 						if entity.rect.bottom< entity.currentLadder.rect.top:
@@ -188,7 +188,7 @@ class Game(object):
 					entity.jumping=True
 		 			entity.onLadder = False
 		 			entity.currentLadder = None
-
+		 			
 			for platform in self.platform_boundaries_list:			
 				if entity.rect.colliderect(platform) and entity.jumping: 
 					entity.currentPlatform = platform;
@@ -203,7 +203,7 @@ class Game(object):
 				if entity.currentPlatform and (entity.rect.left > entity.currentPlatform.rect.right or entity.rect.right < entity.currentPlatform.rect.left or entity.rect.top > entity.currentPlatform.rect.bottom or entity.rect.bottom < entity.currentPlatform.rect.top) and entity.onPlatform:
 					entity.jumping=True
 					entity.currentPlatform = None
-					#entity.onPlatform = False
+					entity.onPlatform = False
 	
 
 
